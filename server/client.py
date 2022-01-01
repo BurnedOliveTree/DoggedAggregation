@@ -1,7 +1,6 @@
 import logging, sys
-from socketLib.SocketInterface import SocketInterface
-from socketLib.SocketTCP import SocketTCP
-from socketLib.Host import Host, get_project_root
+from socketLib import SocketInterface, SocketTCP, Host, get_project_root
+
 
 class Client(Host):
     def __init__(self, argv: list):
@@ -14,7 +13,7 @@ class Client(Host):
         with SocketInterface(socket) as socket:
             if socket is not None:
                 print("Will send data to ", self.host, ":", self.port)
-                data = '' # TODO
+                data = ''  # TODO
                 while data != "QUIT":
                     received_data = socket.read()
                     print('Received data: ', repr(received_data))
@@ -39,8 +38,7 @@ if __name__ == "__main__":
     logging.basicConfig(
         format='%(asctime)s %(levelname)-8s %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S',
-        filename=get_project_root()+'/log/server.log',
+        filename=get_project_root() + '/log/server.log',
         level=logging.DEBUG
     )
     Client(sys.argv).connect()
-    

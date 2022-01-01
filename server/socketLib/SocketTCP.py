@@ -1,8 +1,8 @@
 from io import BytesIO
-from socketLib.Socket import Socket
-from socketLib.RawSocket import RawSocket
+from server.socketLib import Socket, RawSocket
 from struct import calcsize
 import logging
+
 
 class SocketTCP(Socket):
 
@@ -17,7 +17,7 @@ class SocketTCP(Socket):
                 return False
             logging.info('Using TCP socket')
 
-    def read(self, socket = None):
+    def read(self, socket=None):
         socket = self.socket if socket is None else socket
         amount, current_amount = 1, 0
         data_map: dict = {}
@@ -42,7 +42,7 @@ class SocketTCP(Socket):
         data = b''.join(val for (_, val) in data_map.items())
         return data, None
 
-    def send(self, binary_stream: BytesIO, address: str = None, socket = None) -> None:
+    def send(self, binary_stream: BytesIO, socket=None) -> None:
         socket = self.socket if socket is None else socket
         datagram_number = 0
         data = self.split_send_data(binary_stream.read(), socket.buffer_size)
