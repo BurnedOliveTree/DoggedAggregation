@@ -6,16 +6,17 @@ import logging
 
 class SocketTCP(Socket):
 
-    def connect(self) -> None:
+    def connect(self) -> bool:
         if not self.socket:
             self.socket = RawSocket("ipv6" if ":" in self.host else "ipv4")
-            self.socket.setblocking(0)
+            self.socket.set_blocking(0)
             try:
                 self.socket.connect(self.host, self.port)
             except ConnectionRefusedError:
                 self.socket.disconnect()
                 return False
             logging.info('Using TCP socket')
+        return True
 
     def read(self, socket=None):
         socket = self.socket if socket is None else socket

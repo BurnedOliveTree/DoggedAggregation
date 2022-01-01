@@ -13,6 +13,9 @@ class RawSocket:
             self.create_socket(ip_version)
         self.enable_timeout()
 
+    def set_blocking(self, number):
+        self.socket.setblocking(number)
+
     def create_socket(self, ip_version):
         if ip_version == 'ipv4':
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
