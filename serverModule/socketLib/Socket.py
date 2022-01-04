@@ -9,7 +9,7 @@ class Socket:
         self.host: str = host
         self.port: str = port
         self.packet_size = 60000
-        self.header_types = '!IHH'
+        self.header_types = '!IIQ'
 
     def connect(self) -> None:
         if not self.socket:
@@ -27,17 +27,17 @@ class Socket:
                 else:
                     amount, current_amount = 1, 0
                 continue
-            _, size, amount, number = self.split_read_data(header)
+            size, amount, number = self.interpret_header(header)
             data = self.socket.receive(size)
             data_map[number] = data
             current_amount += 1
         data = b''.join(val for (_, val) in data_map.items())
         return data
 
-    def split_read_data(self, datagram: bytes):
+    def interpret_header(self, datagram: bytes):
         header = datagram[:struct.calcsize(self.header_types)]
-        size, amount, number = struct.unpack(self.header_types, header)
-        return datagram[struct.calcsize(self.header_types):], size, amount, number
+        amount, number, size = struct.unpack(self.header_types, header)
+        return size, amount, number
 
     def __create_datagram(self, raw_data: bytes, amount: int, number: int, data_range: tuple):
         datagram: bytearray = bytearray(b'')

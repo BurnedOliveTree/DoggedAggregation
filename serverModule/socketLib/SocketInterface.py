@@ -5,30 +5,37 @@ class SocketInterface:
     def __init__(self, socket):
         self.binary_stream = None
         self.socket = socket
+        self.header_types = '!SBB16s'  # TODO Mariannkaaa!
 
     def connect(self) -> None or bool:
         self.binary_stream = io.BytesIO()
         return self.socket.connect()
 
-    def read(self) -> str:
+    def read(self):
         data = self.socket.read()
         if data:
-            if data[0] == 1:
-                decoded_data = struct.unpack('!iil', data[1:])  # TODO this needs to not be hardcoded
-            else:
-                decoded_data = self.decode(data[1:])
-            return decoded_data
+            header = self.socket.receive(struct.calcsize(self.header_types))
+            content, doc_id, doc_type, status_code, hash_hash = self.interpret_header(header)
+            if status_code == 0:
+                self.save_file(doc_id, doc_type, content)
+            # TODO zrozum header i zapisz dane
+            return "zmien mnie pls"
         raise ValueError('Data not received')
-
-    @staticmethod
-    def decode(data: bytes) -> str:
-        if data:
-            return data.decode("ascii")
-        return ""
 
     def disconnect(self) -> None:
         self.binary_stream.close()
         self.socket.disconnect()
+
+    @staticmethod
+    def save_file(doc_id, doc_type, content):
+        filename = f"{doc_id}.{doc_type}"
+        with open(filename, "wb") as file:
+            file.write(content)
+
+    def interpret_header(self, datagram: bytes):
+        header = datagram[:struct.calcsize(self.header_types)]
+        doc_id, doc_type, status_code, hash_hash = struct.unpack(self.header_types, header)
+        return datagram[struct.calcsize(self.header_types):], doc_id, doc_type, status_code, hash_hash
 
     def __enter__(self):
         succeeded_bind = self.connect()
