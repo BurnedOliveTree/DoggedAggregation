@@ -11,9 +11,9 @@ class Host:
 
     @staticmethod
     def __parse_args(argv):
-        parser = ArgumentParser(description=f'Run a socket-using server/client in python')
-        parser.add_argument('-a', '--address', type=str, help='the ip address of server')
-        parser.add_argument('-p', '--port', type=int, help='the port of server')
+        parser = ArgumentParser(description=f'Run a socket-using serverModule/client in python')
+        parser.add_argument('-a', '--address', type=str, help='the ip address of serverModule')
+        parser.add_argument('-p', '--port', type=int, help='the port of serverModule')
         parser.add_argument('-v', '--ipv', type=int, help='the ip version used in communication')
         args = parser.parse_args(argv[1:])
         return args.address, args.port, args.ipv
