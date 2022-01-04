@@ -17,20 +17,13 @@ class SocketInterface:
             header = self.socket.receive(struct.calcsize(self.header_types))
             content, doc_id, doc_type, status_code, hash_hash = self.interpret_header(header)
             if status_code == 0:
-                self.save_file(doc_id, doc_type, content)
-            # TODO zrozum header i zapisz dane
-            return "zmien mnie pls"
+                return f"{doc_id}.{doc_type}", content
+            raise ValueError('Invalid data received')
         raise ValueError('Data not received')
 
     def disconnect(self) -> None:
         self.binary_stream.close()
         self.socket.disconnect()
-
-    @staticmethod
-    def save_file(doc_id, doc_type, content):
-        filename = f"{doc_id}.{doc_type}"
-        with open(filename, "wb") as file:
-            file.write(content)
 
     def interpret_header(self, datagram: bytes):
         header = datagram[:struct.calcsize(self.header_types)]

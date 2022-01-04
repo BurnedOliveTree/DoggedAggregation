@@ -17,8 +17,10 @@ class Server(Host):
         with SocketInterface(socket) as socket:
             print("Will receive data from ", self.host, ":", self.port)
             while self.server_running:
-                received_data = socket.read()
-                print('Received data: ', repr(received_data))
+                filename, content = socket.read()
+                print(f'Received data: {filename}')
+                with open(filename, "wb") as file:
+                    file.write(content)
 
     def __on_release(self, key):
         if key == Key.esc:
