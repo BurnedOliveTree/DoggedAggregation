@@ -21,15 +21,6 @@ void generateData(std::queue<std::string>* dataStream) {
     }
 }
 
-void printVariant(std::variant<std::string, SimpleStruct> msg) {
-    if (std::get_if<std::string>(&msg)) {
-        std::cout << "[sensor.cpp:26] Received string message: " << std::get<std::string>(msg) << std::endl;
-    }
-    if (std::get_if<SimpleStruct>(&msg)) {
-        std::cout << "[sensor.cpp:29] Received struct message: " << std::get<SimpleStruct>(msg).a << " " << unsigned(std::get<SimpleStruct>(msg).b) << " " << unsigned(std::get<SimpleStruct>(msg).c) << std::endl;
-    }
-}
-
 int main(int argc, char* argv[])
 {
     auto messages = new std::queue<std::string>();
@@ -43,15 +34,14 @@ int main(int argc, char* argv[])
         socketInterface = new SocketUDP();
     }
     client = new Host(socketInterface);
-    std::cout << "[sensor.cpp:46] Initialized main variables" << std::endl;
+    std::cout << "[sensor.cpp:37] Initialized main variables" << std::endl;
 
     while (run_program)
     {
         try {
             if (!messages->empty()) {
-                client->send(messages->front());
+                client->exchange(messages->front());
                 messages->pop();
-                printVariant(client->receive());
             }
         } catch (const std::exception& e) {
             std::cout << e.what() << std::endl;

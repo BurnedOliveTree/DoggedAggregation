@@ -36,7 +36,7 @@ std::vector<char> Socket::receive(){
     std::vector<char> buffer(MAX_PACKET_SIZE);
     ssize_t result = recvfrom(socket_fd, buffer.data(), buffer.size(), 0, self_addr, &socket_len);
     if (result < 0)
-        throw std::runtime_error("Couldn't receive message from server");
+        throw std::runtime_error("Couldn't deserialize message from server");
     std::cout << "[Socket.cpp:40] Received message from server" << std::endl;
     buffer.resize(result);
     return buffer;
@@ -44,6 +44,6 @@ std::vector<char> Socket::receive(){
 
 void Socket::send(std::vector<char> message){
     if (sendto(socket_fd, message.data(), message.size(), 0, self_addr, socket_len) < 0)
-        throw std::runtime_error("Couldn't send message to server");
+        throw std::runtime_error("Couldn't serialize message to server");
     std::cout << "[Socket.cpp:48] Sent message to server" << std::endl;
 }
