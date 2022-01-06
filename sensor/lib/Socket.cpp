@@ -32,7 +32,7 @@ Socket::~Socket(){
     shutdown(socket_fd, SHUT_RDWR);
 }
 
-std::vector<char> Socket::receive(){
+std::vector<char> Socket::receive() {
     std::vector<char> buffer(MAX_PACKET_SIZE);
     ssize_t result = recvfrom(socket_fd, buffer.data(), buffer.size(), 0, self_addr, &socket_len);
     if (result < 0)
@@ -42,8 +42,13 @@ std::vector<char> Socket::receive(){
     return buffer;
 }
 
-void Socket::send(std::vector<char> message){
+void Socket::send(std::vector<char> message) {
     if (sendto(socket_fd, message.data(), message.size(), 0, self_addr, socket_len) < 0)
         throw std::runtime_error("Couldn't serialize message to server");
     std::cout << "[Socket.cpp:48] Sent message to server" << std::endl;
+}
+
+bool Socket::isDataPresent() {
+    std::vector<char> buffer(MAX_PACKET_SIZE);
+    return recvfrom(socket_fd, buffer.data(), buffer.size(), MSG_PEEK | MSG_DONTWAIT, self_addr, &socket_len) >= 0;
 }

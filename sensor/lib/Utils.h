@@ -24,8 +24,8 @@ namespace Utils {
         return *st;
     }
 
-    std::vector<char> serializeString(std::string s);
-    std::string deserializeString(std::vector<char> vc);
+    std::vector<char> serializeString(std::string message);
+    std::string deserializeString(std::vector<char> message);
 
     template<typename T>
     std::vector<char> addHeader(T st, std::vector<char> vc){
@@ -35,8 +35,8 @@ namespace Utils {
         result.insert(result.end(), vc.begin(), vc.end());
         return result;
     }
-    std::vector<char> addHeader(std::vector<char> st, std::vector<char> vc);
-    std::pair<std::vector<char>, std::vector<char>> divideHeader(size_t h_len, std::vector<char> vc);
+    std::vector<char> addHeader(std::vector<char> header, std::vector<char> body);
+    std::pair<std::vector<char>, std::vector<char>> divideHeader(size_t h_len, std::vector<char> data);
     void printVector(const std::vector<char>& vector);
-    std::vector<std::vector<char>> splitData(std::vector<char>data, size_t maxsize);
+    std::vector<std::vector<char>> splitData(std::vector<char>data, size_t maxSize);
 }

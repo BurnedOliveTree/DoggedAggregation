@@ -23,8 +23,9 @@ class Socket{
     int socket_port, socket_fd;
 
 public:
-    explicit Socket(const std::string& ipAddress = "127.0.0.1" , int port = 8000);
+    explicit Socket(const std::string& ipAddress, int port);
     ~Socket();
     void send(std::vector<char> message);
     std::vector<char> receive();
+    bool isDataPresent();
 };

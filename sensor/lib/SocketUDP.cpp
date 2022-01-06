@@ -13,10 +13,7 @@ void SocketUDP::exchange(std::vector<char> message) {
             Utils::printVector(splitMessage[i]);
             packetHeader = {htons(2137), htons(totalPacketAmount), htons(i)};    // TODO change 2137 to a meaningful timestamp
             sock.send(Utils::addHeader(Utils::serializeStruct<PacketHeader>(packetHeader), splitMessage[i]));
-        } while (false);
-        // TODO change false to checkIfSocketHasAnythingToReceive -> this will require changing deserialize to be non-blocking
-        // TODO thought if we would deserialize an old ACK we would have to redo serialize
-
+        } while (!sock.isDataPresent());
         do {
             datagram = sock.receive();
             Utils::printVector(datagram);
