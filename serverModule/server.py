@@ -1,3 +1,4 @@
+import configparser
 import logging
 import sys
 import os
@@ -11,28 +12,29 @@ class Server(Host):
     def __init__(self, argv: list):
         super().__init__(argv)
         signal.signal(signal.SIGINT, self.__on_sig_int)
+        parser = configparser.ConfigParser()
+        parser.read(get_project_root() + "/serverModule/.config")
         self.server_running = True
-        self.types = {
-            0: "jpg",
-            1: "png",
-            2: "txt",
-            3: "doc"
-        }
+        self.data_path = parser.get("server", "data_path")
+        self.file_type = parser.get("server", "file_type")
+        self.file_type_descriptor = parser.get("server", "file_type_descriptor")
+        if self.file_type_descriptor != (self.port % 1000):
+            logging.error("File of wrong format received. Please check your configuration")
 
     def connect(self) -> None:
         socket = Socket(self.host, self.port)
         with SocketInterface(socket) as socket:
             logging.info(f"Will receive data from {self.host} : {self.port}")
             while self.server_running:
-                doc_id, doc_type, status_code, hash_hash, content = socket.read()
+                file_id, file_type_descriptor, status_code, hash_hash, content = socket.read()
                 if status_code != 0:
                     logging.info("Received invalid data")
-                elif doc_type not in self.types.keys() and doc_type != (self.port % 1000):
+                elif file_type_descriptor != self.file_type_descriptor:
                     logging.info("File of wrong format received. Please check your configuration")
                 else:
-                    filename = f"{doc_id}.{self.types[doc_type]}"
-                    logging.info(f'Received data: {filename}')
-                    with open(f"data/{filename}", "wb") as file:
+                    file_path = f"{self.data_path}{file_id}.{self.file_type}"
+                    logging.info(f'Received data: {file_path}')
+                    with open(f"data/{file_path}", "wb") as file:
                         file.write(content)
                         file.flush()
                         os.fsync(file.fileno())
