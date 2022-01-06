@@ -25,9 +25,6 @@ class Socket{
 public:
     explicit Socket(const std::string& ipAddress = "127.0.0.1" , int port = 8000);
     ~Socket();
-    void write(std::vector<char> message);
     void send(std::vector<char> message);
     std::vector<char> receive();
-    std::vector<char> read(size_t n_bytes);
-
 };

@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
     if (argc > 2) {
         socketInterface = new SocketUDP(argv[1], atoi(argv[2]));
     } else {
-        socketInterface = new SocketUDP();
+        socketInterface = new SocketUDP("127.0.0.1" , 8000);
     }
     client = new Host(socketInterface);
     std::cout << "[sensor.cpp:37] Initialized main variables" << std::endl;
