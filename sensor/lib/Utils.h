@@ -11,7 +11,7 @@
 
 namespace Utils {
     template<typename T>
-    std::vector<char> serializeStruct(T s){
+    std::vector<char> serializeStruct(T s) {
         size_t len_st = sizeof(s);
         char* ptr = reinterpret_cast<char*>(&s);
         std::vector<char> result(ptr, ptr+len_st*sizeof(char));
@@ -19,7 +19,7 @@ namespace Utils {
     }
 
     template<typename T>
-    T deserializeStruct(std::vector<char> vc){
+    T deserializeStruct(std::vector<char> vc) {
         T* st = reinterpret_cast<T*>(vc.data());
         return *st;
     }
@@ -28,7 +28,7 @@ namespace Utils {
     std::string deserializeString(std::vector<char> message);
 
     template<typename T>
-    std::vector<char> addHeader(T st, std::vector<char> vc){
+    std::vector<char> addHeader(T st, std::vector<char> vc) {
         size_t len_st = sizeof(st);
         char* ptr = reinterpret_cast<char*>(&st);
         std::vector<char> result(ptr, ptr+len_st*sizeof(char));

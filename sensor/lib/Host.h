@@ -3,7 +3,6 @@
 #include "DataSerializer.h"
 
 class Host {
-    DataSerializer serializer;
     SocketInterface* socketInterface;
 public:
     explicit Host(SocketInterface* _si);

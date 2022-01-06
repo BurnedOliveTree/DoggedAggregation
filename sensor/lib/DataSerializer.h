@@ -3,6 +3,7 @@
 
 #include "SocketInterface.h"
 
+// TODO: change this header
 struct TypeHeader{
     uint8_t type;
 };   
