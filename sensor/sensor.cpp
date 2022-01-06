@@ -5,15 +5,17 @@
 #include <sstream>
 #include <thread>
 
-
 bool run_program = true;
+std::mutex dataStreamMutex;
 
 void generateData(std::queue<std::string>* dataStream) {
     uint64_t counter = 0;
     std::cout << "[sensor.cpp:13] Started to generate data" << std::endl;
     while (run_program) {
         std::cout << "[sensor.cpp:15] Generated data" << std::endl;
+        dataStreamMutex.lock();
         dataStream -> push("random number: "+std::to_string(counter));
+        dataStreamMutex.unlock();
         sleep(rand() % 5);
         counter++;
         if (counter == 20)
@@ -38,13 +40,11 @@ int main(int argc, char* argv[])
 
     while (run_program)
     {
-        try {
-            if (!messages->empty()) {
-                client->exchange(messages->front());
-                messages->pop();
-            }
-        } catch (const std::exception& e) {
-            std::cout << e.what() << std::endl;
+        if (!messages->empty()) {
+            dataStreamMutex.lock();
+            client->exchange(messages->front());
+            messages->pop();
+            dataStreamMutex.unlock();
         }
     }
 
