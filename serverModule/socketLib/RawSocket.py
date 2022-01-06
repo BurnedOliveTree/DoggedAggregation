@@ -4,7 +4,7 @@ import socket
 
 class RawSocket:
     def __init__(self, ip_version=None):
-        self.buffer_size = 65535
+        self.buffer_size = 256
         self.socket: socket.socket = None
         if ip_version is not None:
             self.socket = socket.socket(socket.AF_INET if ip_version == "ipv4" else socket.AF_INET6, socket.SOCK_STREAM)

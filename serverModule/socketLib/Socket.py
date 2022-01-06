@@ -16,7 +16,7 @@ class Socket:
             self.socket = RawSocket("ipv6" if ":" in self.host else "ipv4")
             self.socket.connect(self.host, self.port)
 
-    def read(self):
+    def receive(self):
         amount, current_amount = 1, 0
         data_map: dict = {}
         while current_amount < amount:
