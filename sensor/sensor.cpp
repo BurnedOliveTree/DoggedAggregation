@@ -16,7 +16,7 @@ void generateData(std::queue<std::string>* dataStream) {
         dataStreamMutex.lock();
         dataStream -> push("random number: "+std::to_string(counter));
         dataStreamMutex.unlock();
-        sleep(rand() % 5);
+        std::this_thread::sleep_for(std::chrono::nanoseconds(random() % 4000000000 + 1000000000));
         counter++;
         if (counter == 20)
             run_program = false;
