@@ -15,7 +15,7 @@ add_library(
     lib/SocketUDP.cpp
         lib/Utils.h
     lib/Utils.cpp
-)
+        lib/Timer.h lib/Timer.cpp)
 
 add_executable(sensor sensor.cpp)
 target_link_libraries(sensor PUBLIC Everything)

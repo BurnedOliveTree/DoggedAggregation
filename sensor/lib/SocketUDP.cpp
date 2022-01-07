@@ -7,12 +7,13 @@ void SocketUDP::exchange(std::vector<char> message) {
     uint32_t totalPacketAmount = splitMessage.size();
     std::vector<char> datagram;
     PacketHeader packetHeader;
+    Timer* timer = &Timer::getInstance();
     for (uint32_t i = 0; i < totalPacketAmount; i++)
     {
         do {
             do {
                 Utils::printVector(splitMessage[i]);
-                packetHeader = {htons(2137), htons(totalPacketAmount), htons(i)};    // TODO change 2137 to a meaningful timestamp
+                packetHeader = {htons(timer->getCounter()), htons(totalPacketAmount), htons(i)};
                 sock.send(Utils::addHeader(Utils::serializeStruct<PacketHeader>(packetHeader), splitMessage[i]));
             } while (!sock.isDataPresent());
             datagram = sock.receive();
@@ -26,10 +27,11 @@ void SocketUDP::exchange(std::vector<char> message) {
 void SocketUDP::send(std::vector<char> message) {
     std::vector<std::vector<char>> splitMessage = Utils::splitData(message, MAX_PACKET_SIZE - 4);
     uint32_t totalPacketAmount = splitMessage.size();
+    Timer* timer = &Timer::getInstance();
     for (uint32_t i = 0; i < totalPacketAmount; i++)
     {
         Utils::printVector(splitMessage[i]);
-        PacketHeader packetHeader = {htons(2137), htons(totalPacketAmount), htons(i)};    // TODO change 2137 to a meaningful timestamp
+        PacketHeader packetHeader = {htons(timer->getCounter()), htons(totalPacketAmount), htons(i)};
         sock.send(Utils::addHeader(Utils::serializeStruct<PacketHeader>(packetHeader), splitMessage[i]));
     }
 }

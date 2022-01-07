@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SocketInterface.h"
+#include "Timer.h"
 
 class SocketUDP: public SocketInterface{
     Socket sock;

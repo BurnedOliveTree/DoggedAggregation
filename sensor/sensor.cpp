@@ -1,5 +1,6 @@
 #include "lib/SocketUDP.h"
 #include "lib/Host.h"
+#include "lib/Timer.h"
 #include <iostream>
 #include <queue>
 #include <sstream>
@@ -10,9 +11,9 @@ std::mutex dataStreamMutex;
 
 void generateData(std::queue<std::string>* dataStream) {
     uint64_t counter = 0;
-    std::cout << "[sensor.cpp:13] Started to generate data" << std::endl;
+    std::cout << "[sensor.cpp:14] Started to generate data" << std::endl;
     while (run_program) {
-        std::cout << "[sensor.cpp:15] Generated data" << std::endl;
+        std::cout << "[sensor.cpp:16] Generated data" << std::endl;
         dataStreamMutex.lock();
         dataStream -> push("random number: "+std::to_string(counter));
         dataStreamMutex.unlock();
@@ -25,6 +26,7 @@ void generateData(std::queue<std::string>* dataStream) {
 
 int main(int argc, char* argv[])
 {
+    auto timer = &Timer::getInstance();
     auto messages = new std::queue<std::string>();
     SocketInterface* socketInterface;
     Host* client;
@@ -36,7 +38,7 @@ int main(int argc, char* argv[])
         socketInterface = new SocketUDP("127.0.0.1" , 8000);
     }
     client = new Host(socketInterface);
-    std::cout << "[sensor.cpp:37] Initialized main variables" << std::endl;
+    std::cout << "[sensor.cpp:41] Initialized main variables" << std::endl;
 
     while (run_program)
     {
