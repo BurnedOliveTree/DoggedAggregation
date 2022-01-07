@@ -12,12 +12,12 @@ void SocketUDP::exchange(std::vector<char> message) {
     {
         do {
             do {
-                Utils::printVector(splitMessage[i]);
+                Utils::printVector(splitMessage[i], "Sent datagram");
                 packetHeader = {htons(timer->getCounter()), htons(totalPacketAmount), htons(i)};
                 sock.send(Utils::addHeader(Utils::serializeStruct<PacketHeader>(packetHeader), splitMessage[i]));
             } while (!sock.isDataPresent());
             datagram = sock.receive();
-            Utils::printVector(datagram);
+            Utils::printVector(datagram, "Received datagram");
             auto[header, body] = Utils::divideHeader(sizeof(PacketHeader), datagram);
             packetHeader = Utils::deserializeStruct<PacketHeader>(header);
         } while (packetHeader.current < i);
@@ -30,7 +30,7 @@ void SocketUDP::send(std::vector<char> message) {
     Timer* timer = &Timer::getInstance();
     for (uint32_t i = 0; i < totalPacketAmount; i++)
     {
-        Utils::printVector(splitMessage[i]);
+        Utils::printVector(splitMessage[i], "Sent datagram");
         PacketHeader packetHeader = {htons(timer->getCounter()), htons(totalPacketAmount), htons(i)};
         sock.send(Utils::addHeader(Utils::serializeStruct<PacketHeader>(packetHeader), splitMessage[i]));
     }
@@ -42,7 +42,7 @@ std::vector<char> SocketUDP::receive(){
     PacketHeader packetHeader;
     do {
         datagram = sock.receive();
-        Utils::printVector(datagram);
+        Utils::printVector(datagram, "Received datagram");
         auto [header, body] = Utils::divideHeader(sizeof(PacketHeader), datagram);
         packetHeader = Utils::deserializeStruct<PacketHeader>(header);
         result.insert(result.end(), body.begin(), body.end());

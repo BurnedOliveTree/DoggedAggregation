@@ -9,6 +9,18 @@ namespace Utils {
         return {message.begin(), message.end()};
     }
 
+    std::vector<char> serializeTime(uint16_t time) {
+        std::vector<char> result;
+        std::memcpy(result.data(), &time, sizeof(time));
+        return result;
+    }
+
+    uint16_t deserializeTime(std::vector<char> time) {
+        uint16_t result;
+        std::memcpy(&result, time.data(), sizeof(result));
+        return result;
+    }
+
     std::vector<char> addHeader(std::vector<char> header, std::vector<char> body) {
         std::vector<char> result = header;
         result.insert(result.end(), body.begin(), body.end());
@@ -28,8 +40,8 @@ namespace Utils {
         return splits;
     }
 
-    void printVector(const std::vector<char>& vector){
-        std::cout << "[Utils.cpp:40] VecSize: " << vector.size() << "|\t";
+    void printVector(const std::vector<char>& vector, std::string additional) {
+        std::cout << "[Utils.cpp:44] " << additional << "; size: " << vector.size() << ", content:";
         for (char i : vector)
             std::cout << " " << unsigned(i);
         std::cout << std::endl;

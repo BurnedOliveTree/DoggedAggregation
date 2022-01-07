@@ -6,7 +6,7 @@ class Host {
     SocketInterface* socketInterface;
 public:
     explicit Host(SocketInterface* _si);
-    void exchange(std::variant<std::string, SimpleStruct> msg);
-    void send(std::variant<std::string, SimpleStruct> msg);
-    std::variant<std::string, SimpleStruct> receive();
+    void exchange(std::variant<std::string, uint16_t> msg, uint16_t documentId, uint8_t documentType);
+    void send(std::variant<std::string, uint16_t> msg, uint16_t documentId, uint8_t documentType);
+    std::variant<std::string, uint16_t> receive();
 };

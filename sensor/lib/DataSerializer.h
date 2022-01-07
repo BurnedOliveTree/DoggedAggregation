@@ -3,24 +3,23 @@
 
 #include "SocketInterface.h"
 
-// TODO: change this header
-struct TypeHeader{
+struct StandardHeader {
+    uint16_t documentId;
+    uint8_t documentType;
     uint8_t type;
-};   
+};
 
-struct SimpleStruct{
-    uint16_t a;
-    uint8_t b;
-    uint8_t c;
+struct TimeHeader {
+    uint8_t type;
 };
 
 class DataSerializer{
-    static SimpleStruct handleStruct(std::vector<char> data);
     static std::string handleString(std::vector<char> data);
+    static uint16_t handleTime(std::vector<char> data);
 public:
     explicit DataSerializer();
-    static std::vector<char> serialize(std::string message);
-    static std::vector<char> serialize(SimpleStruct message);
-    static std::variant<std::string, SimpleStruct> deserialize(std::vector<char> data);
-    static void printVariant(std::variant<std::string, SimpleStruct> msg);
+    static std::vector<char> serialize(std::string message, uint16_t documentId, uint8_t documentType);
+    static std::vector<char> serialize(uint16_t time, uint16_t documentId, uint8_t documentType);
+    static std::variant<std::string, uint16_t> deserialize(std::vector<char> data);
+    static void printVariant(std::variant<std::string, uint16_t> msg);
 };

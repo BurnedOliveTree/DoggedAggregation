@@ -27,6 +27,9 @@ namespace Utils {
     std::vector<char> serializeString(std::string message);
     std::string deserializeString(std::vector<char> message);
 
+    std::vector<char> serializeTime(uint16_t time);
+    uint16_t deserializeTime(std::vector<char> time);
+
     template<typename T>
     std::vector<char> addHeader(T st, std::vector<char> vc) {
         size_t len_st = sizeof(st);
@@ -37,6 +40,6 @@ namespace Utils {
     }
     std::vector<char> addHeader(std::vector<char> header, std::vector<char> body);
     std::pair<std::vector<char>, std::vector<char>> divideHeader(size_t h_len, std::vector<char> data);
-    void printVector(const std::vector<char>& vector);
+    void printVector(const std::vector<char>& vector, std::string additional = "");
     std::vector<std::vector<char>> splitData(std::vector<char>data, size_t maxSize);
 }

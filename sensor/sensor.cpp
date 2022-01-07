@@ -10,13 +10,32 @@
 bool run_program = true;
 std::mutex dataStreamMutex;
 
-void generateData(std::queue<std::string>* dataStream) {
+enum DocumentType {
+    JPG,
+    PNG,
+    TXT,
+    DOC
+};
+
+struct Document {
+    Document(std::string argMessage, uint16_t argDocumentId, DocumentType argDocumentType) {
+        message = argMessage;
+        documentId = argDocumentId;
+        documentType = argDocumentType;
+    }
+
+    uint16_t documentId;
+    uint8_t documentType;
+    std::string message;
+};
+
+void generateData(std::queue<Document>* dataContainer) {
     uint64_t counter = 0;
-    std::cout << "[sensor.cpp:14] Started to generate data" << std::endl;
+    std::cout << "[sensor.cpp:34] Started to generate data" << std::endl;
     while (run_program) {
-        std::cout << "[sensor.cpp:16] Generated data" << std::endl;
+        std::cout << "[sensor.cpp:36] Generated data" << std::endl;
         dataStreamMutex.lock();
-        dataStream -> push("random number: "+std::to_string(counter));
+        dataContainer -> push(Document("random number: " + std::to_string(counter), counter / 10, TXT));
         dataStreamMutex.unlock();
         std::this_thread::sleep_for(std::chrono::nanoseconds(random() % 4000000000 + 1000000000));
         counter++;
@@ -52,8 +71,10 @@ std::chrono::nanoseconds ping() {
 
 int main(int argc, char* argv[])
 {
+    // TODO: add receiving and processing of time synchronization datagrams
+    // TODO: add configuration
     auto timer = &Timer::getInstance();
-    auto messages = new std::queue<std::string>();
+    auto messages = new std::queue<Document>();
     SocketInterface* socketInterface;
     Host* client;
 
@@ -64,13 +85,14 @@ int main(int argc, char* argv[])
         socketInterface = new SocketUDP("127.0.0.1" , 8000);
     }
     client = new Host(socketInterface);
-    std::cout << "[sensor.cpp:41] Initialized main variables" << std::endl;
+    std::cout << "[sensor.cpp:88] Initialized main variables" << std::endl;
 
     while (run_program)
     {
         if (!messages->empty()) {
             dataStreamMutex.lock();
-            client->exchange(messages->front());
+            auto currentMessage = messages->front();
+            client->exchange(currentMessage.message, currentMessage.documentId, currentMessage.documentType);
             messages->pop();
             dataStreamMutex.unlock();
         }
