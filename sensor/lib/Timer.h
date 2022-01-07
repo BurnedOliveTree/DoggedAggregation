@@ -14,7 +14,7 @@ public:
     void operator=(Timer const&) = delete;
 private:
     uint16_t counter;
-    bool isCounting;
+    std::atomic<bool> isCounting;
     std::thread internalThread;
 
     Timer();
