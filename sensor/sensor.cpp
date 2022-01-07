@@ -30,9 +30,18 @@ std::chrono::nanoseconds ping() {
     return std::chrono::nanoseconds(static_cast<long long>(value));
 }
 
+void timeSynchronization(Host* client, std::atomic<bool> isProgramRunning) {
+    auto timer = &Timer::getInstance();
+    while (isProgramRunning) {
+        auto newTime = client->receiveTime();
+        auto latency = ping() / TICK;
+        timer->setCounter(newTime + latency);
+        std::this_thread::sleep_for(TICK / 10);
+    }
+}
+
 int main(int argc, char* argv[])
 {
-    // TODO: add receiving and processing of time synchronization datagrams
     // TODO: add configuration
     std::atomic<bool> isProgramRunning = true;
     auto timer = &Timer::getInstance();
@@ -46,6 +55,7 @@ int main(int argc, char* argv[])
         socketInterface = new SocketUDP("127.0.0.1" , 8000);
     }
     client = new Host(socketInterface);
+    std::thread timeThread(&timeSynchronization, client, &isProgramRunning);
     std::cout << "[sensor.cpp:88] Initialized main variables" << std::endl;
 
     while (isProgramRunning)
@@ -54,6 +64,7 @@ int main(int argc, char* argv[])
             auto currentMessage = messages.get();
             client->exchange(currentMessage.message, currentMessage.documentId, currentMessage.documentType);
         }
+        std::this_thread::sleep_for(TICK);
     }
 
     delete client;

@@ -36,13 +36,14 @@ void SocketUDP::send(std::vector<char> message) {
     }
 }
 
-std::vector<char> SocketUDP::receive(){
+std::vector<char> SocketUDP::receive(int flag) {
     std::vector<char> result;
     std::vector<char> datagram;
     PacketHeader packetHeader;
     do {
-        datagram = sock.receive();
-        Utils::printVector(datagram, "Received datagram");
+        datagram = sock.receive(flag);
+        if (flag != MSG_PEEK)
+            Utils::printVector(datagram, "Received datagram");
         auto [header, body] = Utils::divideHeader(sizeof(PacketHeader), datagram);
         packetHeader = Utils::deserializeStruct<PacketHeader>(header);
         result.insert(result.end(), body.begin(), body.end());

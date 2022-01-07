@@ -13,5 +13,5 @@ public:
     virtual ~SocketInterface() = default;
     virtual void exchange(std::vector<char> message) = 0;
     virtual void send(std::vector<char> message) = 0;
-    virtual std::vector<char> receive() = 0;
+    virtual std::vector<char> receive(int flag = 0) = 0;
 };

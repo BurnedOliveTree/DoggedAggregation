@@ -26,6 +26,6 @@ public:
     explicit Socket(const std::string& ipAddress, int port);
     ~Socket();
     void send(std::vector<char> message);
-    std::vector<char> receive();
+    std::vector<char> receive(int flag = 0);
     bool isDataPresent();
 };
