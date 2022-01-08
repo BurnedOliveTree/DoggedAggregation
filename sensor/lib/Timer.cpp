@@ -15,7 +15,7 @@ void Timer::setCounter(uint16_t value) {
 
 void Timer::increment() {
     while (isCounting) {
-        std::this_thread::sleep_for(TICK);
+        std::this_thread::sleep_for(tick);
         counter++;
     }
 }
@@ -23,6 +23,7 @@ void Timer::increment() {
 Timer::Timer() {
     counter = 0;
     isCounting = true;
+    tick = std::chrono::nanoseconds(std::stol(Utils::readConfig()["tickDuration"]));
     internalThread = std::thread(&Timer::increment, this);
 }
 

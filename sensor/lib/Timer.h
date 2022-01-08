@@ -1,11 +1,12 @@
 #pragma once
 
 #include <thread>
-
-constexpr auto TICK = std::chrono::nanoseconds(5000000000);
+#include "Utils.h"
 
 class Timer {
 public:
+    std::chrono::nanoseconds tick;
+
     static Timer& getInstance();
     uint16_t getCounter() const;
     void setCounter(uint16_t value);

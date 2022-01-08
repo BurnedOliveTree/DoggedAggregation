@@ -46,4 +46,41 @@ namespace Utils {
             std::cout << " " << unsigned(i);
         std::cout << std::endl;
     }
+
+    std::map<std::string, std::string> readConfig() {
+        std::ifstream config("../sensor.config");
+        std::string line;
+        auto result = std::map<std::string, std::string>();
+        while (std::getline(config, line)) {
+            auto signIndex = line.find('=');
+            result[line.substr(0, signIndex)] = line.substr(signIndex + 1, line.size());
+        }
+        config.close();
+        return result;
+    }
+
+    std::chrono::nanoseconds ping() {
+        char buffer[256];
+        auto file = popen("ping 127.0.0.1 -c 1", "r");
+        fgets(buffer, 256, file);
+        fgets(buffer, 256, file);
+        pclose(file);
+
+        std::smatch result[3];
+        auto temp = std::string(buffer);
+        std::regex_search(temp, result[0], std::regex("time=.*"));
+        temp = std::string(result[0][0]);
+        std::regex_search(temp, result[1], std::regex("[0-9]+\\.[0-9]+"));
+        std::regex_search(temp, result[2], std::regex("[mn]?s"));
+
+        double value;
+        if (result[2][0] == "ms") {
+            value = 1000000 * stod(result[1][0]);
+        } else if(result[2][0] == "s") {
+            value = stod(result[1][0]);
+        } else {
+            throw std::invalid_argument("Ping returned a value in other units than: ms, s!");
+        }
+        return std::chrono::nanoseconds(static_cast<long long>(value));
+    }
 }

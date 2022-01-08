@@ -2,6 +2,10 @@
 
 #include <vector>
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <map>
+#include <regex>
 #include <string>
 #include <netdb.h>
 #include <netinet/in.h>
@@ -17,16 +21,13 @@ namespace Utils {
         std::vector<char> result(ptr, ptr+len_st*sizeof(char));
         return result;
     }
-
     template<typename T>
     T deserializeStruct(std::vector<char> vc) {
         T* st = reinterpret_cast<T*>(vc.data());
         return *st;
     }
-
     std::vector<char> serializeString(std::string message);
     std::string deserializeString(std::vector<char> message);
-
     std::vector<char> serializeTime(uint16_t time);
     uint16_t deserializeTime(std::vector<char> time);
 
@@ -42,4 +43,6 @@ namespace Utils {
     std::pair<std::vector<char>, std::vector<char>> divideHeader(size_t h_len, std::vector<char> data);
     void printVector(const std::vector<char>& vector, std::string additional = "");
     std::vector<std::vector<char>> splitData(std::vector<char>data, size_t maxSize);
+    std::map<std::string, std::string> readConfig();
+    std::chrono::nanoseconds ping();
 }
