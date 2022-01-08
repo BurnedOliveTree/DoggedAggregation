@@ -1,6 +1,8 @@
 #include "SocketUDP.h"
 
-SocketUDP::SocketUDP(const std::string& ipAddress, int port): sock(ipAddress, port) {}
+SocketUDP::SocketUDP(const std::string& ipAddress, int port): sock(ipAddress, port) {
+    timeoutAfter = std::stoul(Utils::readConfig()["timeoutAfter"]);
+}
 
 void SocketUDP::exchange(std::vector<char> message) {
     std::vector<std::vector<char>> splitMessage = Utils::splitData(message, MAX_PACKET_SIZE - 4);
@@ -8,19 +10,22 @@ void SocketUDP::exchange(std::vector<char> message) {
     std::vector<char> datagram;
     PacketHeader packetHeader;
     Timer* timer = &Timer::getInstance();
+    uint16_t count[2];
     for (uint32_t i = 0; i < totalPacketAmount; i++)
     {
+        count[1] = timer->getCounter();
         do {
+            count[0] = timer->getCounter();
             do {
                 Utils::printVector(splitMessage[i], "Sent datagram");
                 packetHeader = {htons(timer->getCounter()), htons(totalPacketAmount), htons(i)};
                 sock.send(Utils::addHeader(Utils::serializeStruct<PacketHeader>(packetHeader), splitMessage[i]));
-            } while (!sock.isDataPresent());
+            } while (!sock.isDataPresent() && (timer->getCounter() - count[0]) < timeoutAfter);
             datagram = sock.receive();
             Utils::printVector(datagram, "Received datagram");
             auto[header, body] = Utils::divideHeader(sizeof(PacketHeader), datagram);
             packetHeader = Utils::deserializeStruct<PacketHeader>(header);
-        } while (packetHeader.current < i);
+        } while (packetHeader.current < i && (timer->getCounter() - count[1]) < timeoutAfter);
     }
 }
 

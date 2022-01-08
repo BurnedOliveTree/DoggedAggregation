@@ -5,6 +5,7 @@
 
 class SocketUDP: public SocketInterface{
     Socket sock;
+    uint16_t timeoutAfter;
 public:
     explicit SocketUDP(const std::string& ipAddress, int port);
     void exchange(std::vector<char> message) override;

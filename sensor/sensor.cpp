@@ -15,7 +15,6 @@ void timeSynchronization(Host* client, std::atomic<bool> isProgramRunning) {
 }
 
 int main() {
-    // TODO: add timeouts to sockets
     // TODO: fix this stupid "libc++abi: terminating" error
     std::atomic<bool> isProgramRunning = true;
     auto timer = &Timer::getInstance();

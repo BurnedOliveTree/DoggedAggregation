@@ -5,8 +5,8 @@ Socket::Socket(const std::string& ipAddress, int port) {
     socket_port = port;
     if (std::string(ipAddress).find('.') != std::string::npos){
         desc_4.sin_family = AF_INET;
-        desc_4.sin_port = htons( socket_port );
-        if (inet_pton(AF_INET, socket_ip.c_str(), & desc_4.sin_addr ) <= 0 )
+        desc_4.sin_port = htons(socket_port);
+        if (inet_pton(AF_INET, socket_ip.c_str(), &desc_4.sin_addr) <= 0)
             throw std::runtime_error("inet_pton didn't convert IP");
         socket_fd = socket(AF_INET, SOCK_DGRAM, 0);
         if ((socket_fd) < 0)
@@ -16,8 +16,8 @@ Socket::Socket(const std::string& ipAddress, int port) {
     }
     else {
         desc_6.sin6_family = AF_INET6;
-        desc_6.sin6_port = htons( socket_port );
-        if (inet_pton(AF_INET6, socket_ip.c_str(), & desc_6.sin6_addr ) <= 0)
+        desc_6.sin6_port = htons(socket_port);
+        if (inet_pton(AF_INET6, socket_ip.c_str(), &desc_6.sin6_addr) <= 0)
             throw std::runtime_error("inet_pton didn't convert IP");
         socket_fd = socket(AF_INET6, SOCK_DGRAM, 0);
         if ((socket_fd) < 0)
