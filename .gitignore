@@ -1,3 +1,7 @@
 .idea/
 cmake-build-debug/
 build/
+venv/
+__pycache__/
+log/
+data/
