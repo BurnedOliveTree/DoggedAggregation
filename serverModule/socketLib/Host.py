@@ -1,13 +1,16 @@
+import configparser
 from argparse import ArgumentParser
 from subprocess import check_output
 
 
 class Host:
     def __init__(self, argv: list):
+        parser = configparser.ConfigParser()
+        parser.read(get_project_root() + "/serverModule/.config")
         host, port, ipv = self.__parse_args(argv)
-        self.ip_version = ipv if ipv is not None and ipv in [4, 6] else 4
-        self.host = host if host is not None else self.get_default_host_address(self.ip_version)
-        self.port = port if port is not None else 8000
+        self.ip_version = ipv if ipv is not None and ipv in [4, 6] else int(parser.get("host", "ip_version"))
+        self.host = host if host is not None else self.get_default_host_address(self.ip_version, parser)
+        self.port = port if port is not None else int(parser.get("host", "port"))
 
     @staticmethod
     def __parse_args(argv):
@@ -19,11 +22,11 @@ class Host:
         return args.address, args.port, args.ipv
 
     @staticmethod
-    def get_default_host_address(ip_version: int) -> str:
+    def get_default_host_address(ip_version: int, parser) -> str:
         if ip_version == 4:
-            return "127.0.0.1"
+            return parser.get("host", "address_ipv4")
         elif ip_version == 6:
-            return "::1"
+            return parser.get("host", "address_ipv6")
 
 
 def get_project_root() -> str:
