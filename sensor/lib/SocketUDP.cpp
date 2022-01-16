@@ -1,4 +1,5 @@
 #include "SocketUDP.h"
+#include <iostream>
 
 SocketUDP::SocketUDP(const std::string& ipAddress, int port): sock(ipAddress, port) {
     timeoutAfter = std::stoul(Utils::readConfig()["timeoutAfter"]);
@@ -21,6 +22,7 @@ void SocketUDP::exchange(std::vector<char> message) {
                 packetHeader = {htons(timer->getCounter()), htons(totalPacketAmount), htons(i)};
                 sock.send(Utils::addHeader(Utils::serializeStruct<PacketHeader>(packetHeader), splitMessage[i]));
             } while (!sock.isDataPresent() && (timer->getCounter() - count[0]) < timeoutAfter);
+            std::cout << "TUTAJ!!" << std::endl;
             datagram = sock.receive();
             Utils::printVector(datagram, "Received datagram");
             auto[header, body] = Utils::divideHeader(sizeof(PacketHeader), datagram);

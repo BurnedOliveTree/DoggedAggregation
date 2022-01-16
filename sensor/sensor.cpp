@@ -3,6 +3,10 @@
 #include "lib/Timer.h"
 #include "lib/Document.h"
 #include <iostream>
+#include <thread>
+
+std::string ipAdress = "127.0.0.1";
+int port = 8000;
 
 void timeSynchronization(Host* client, std::atomic<bool> isProgramRunning) {
     auto timer = &Timer::getInstance();
@@ -15,7 +19,6 @@ void timeSynchronization(Host* client, std::atomic<bool> isProgramRunning) {
 }
 
 int main() {
-    // TODO: fix this stupid "libc++abi: terminating" error
     std::atomic<bool> isProgramRunning = true;
     auto timer = &Timer::getInstance();
     auto messages = DocumentContainer(isProgramRunning);
@@ -23,7 +26,7 @@ int main() {
     Host* client;
 
     auto config = Utils::readConfig();
-    socketInterface = new SocketUDP(config["ipAddress"], std::stoi(config["port"]));
+    socketInterface = new SocketUDP(ipAdress, port);
     client = new Host(socketInterface);
     std::thread timeThread(&timeSynchronization, client, &isProgramRunning);
     std::cout << "[sensor.cpp:30] Initialized main variables" << std::endl;

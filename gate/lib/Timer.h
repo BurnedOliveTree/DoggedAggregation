@@ -3,7 +3,6 @@
 #include <thread>
 #include <atomic>
 #include <memory>
-
 #include "Utils.h"
 
 

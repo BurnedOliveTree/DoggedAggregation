@@ -5,6 +5,10 @@
 #include <queue>
 #include <iostream>
 #include <thread>
+#include <mutex>
+#include <atomic>
+#include <memory>
+
 
 enum DocumentType {
     JPG,
