@@ -1,4 +1,5 @@
 #include "Socket.h"
+#include <iostream>
 
 Socket::Socket(std::string ip, int port, bool is_serv,bool is_UDP){
     is_server = is_serv;
@@ -134,7 +135,6 @@ void Socket::Write(std::vector<char> msg, int which_socket){
     }
     int sall = 0, sval = 0;
     int bsize = msg.size();
-    // std::cout << "Sock: " << std::to_string(sock) << "   Poll: " << std::to_string(fds[which_socket].fd)<< std::endl; 
     do{
         if((sval = send(sock_dsc, msg.data()+sall, bsize-sall, 0)) < 0){
             throw std::runtime_error("Couldn't write message to stream");
@@ -155,9 +155,12 @@ void Socket::Send(std::vector<char> msg){
         dst_len = socket_len;
     }
     int bsize = msg.size();
-    if(sendto(sock, msg.data(), bsize, 0, dst, dst_len ) < 0)
+    std::cout << "sendto dst: " << "hmm" << "len: " << int(dest_len)<< "\n";
+    int er;
+    er = sendto(sock, msg.data(), bsize, 0, self_addr, socket_len );
+    if(er<0)
         {
-            throw std::runtime_error("Couldn't send message to server");
+            throw std::runtime_error("Couldn't send message to server " + std::to_string(er));
         }
 }
 
@@ -174,7 +177,8 @@ std::vector<char> Socket::Receive(){
         dst_len = &socket_len;
     }
 
-    int result = recvfrom(sock, buffer.data(), buffer.size(), 0, dst, dst_len);
+    int result = recvfrom(sock, buffer.data(), buffer.size(), 0, self_addr, &socket_len);
+    std::cout << "recfrom dst: " << "hmm" << "len: " << dest_len<< "\n";
     if( result < 0 )
         {   
             throw std::runtime_error("Couldn't receive message from server");

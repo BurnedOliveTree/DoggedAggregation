@@ -4,16 +4,16 @@
 #include "SocketTCP.h"
 #include "Host.h"
 #include <iostream>
-#include <array>
+#include <vector>
 
 class Gate{ 
     std::string ipAdress;
-    int port;
+    int port, nServers;
     SocketInterface* sensorI;
-    std::array<SocketInterface*, 4> serwerI;
+    std::vector<SocketInterface*> serwerI;
 public:
     Host* sensorGate;
     std::array<Host*, 4> serwerGate;
-    Gate();
+    Gate(std::string ip = "127.0.0.1", int pt = 8000, int nsv=4);
     ~Gate();
 };
