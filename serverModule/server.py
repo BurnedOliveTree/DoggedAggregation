@@ -17,7 +17,7 @@ class Server(Host):
         self.server_running = True
         self.data_path = parser.get("server", "data_path")
         self.file_type = parser.get("server", "file_type")
-        self.file_type_descriptor = parser.get("server", "file_type_descriptor")
+        self.file_type_descriptor = int(parser.get("server", "file_type_descriptor"))
         if self.file_type_descriptor != (self.port % 1000):
             logging.error("File of wrong format received. Please check your configuration")
 

@@ -1,6 +1,6 @@
 import struct
 
-from serverModule.socketLib.RawSocket import RawSocket
+from socketLib.RawSocket import RawSocket
 
 
 class Socket:
