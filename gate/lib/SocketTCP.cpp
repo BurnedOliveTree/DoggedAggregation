@@ -37,6 +37,8 @@ std::vector<char> SocketTCP::Receive(bool echo){
     // return sock.Read(ntohs(ph.length));
 }
 
+std::vector<char> SocketTCP::ReceiveRaw(bool echo){}
+
 std::vector<std::vector<char>> SocketTCP::ReceiveAll(){
     bool compress = false;
     std::vector<std::vector<char>> result;

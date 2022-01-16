@@ -12,6 +12,8 @@ public:
     std::vector<char> Receive(bool echo = false) override;
     std::vector<std::vector<char>> ReceiveAll() override;
     std::vector<char> ReceiveEcho(int which_one);
+    std::vector<char> ReceiveRaw(bool echo = false) override;
+
     void SendSpecific(std::vector<char> msg, int which_one);
 
 };

@@ -8,8 +8,8 @@ Gate::Gate(std::string ip, int pt, int nsv){
     sensorI = new SocketUDP(ipAdress, port,true);
     sensorGate = new Host(sensorI);
     for(int i =0; i<4; i++){
-        serwerI[i] = new SocketTCP(ipAdress, port+1+i,true);
-        serwerGate[i] = new Host(serwerI[i]);
+        serwerI.push_back(new SocketTCP(ipAdress, port+1+i,true));
+        serwerGate.push_back(new Host(serwerI[i]));
     }
 }
 

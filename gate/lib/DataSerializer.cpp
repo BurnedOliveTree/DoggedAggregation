@@ -29,6 +29,10 @@ std::variant<std::string, SimpleStruct> DataSerializer::Receive(bool echo){
     }
 }
 
+std::vector<char> DataSerializer::ReceiveRaw(bool echo){
+    return si->ReceiveRaw(echo);
+}
+
 std::vector<std::variant<std::string, SimpleStruct>> DataSerializer::ReceiveAll(){
     std::vector<std::variant<std::string, SimpleStruct>> result;
     std::vector<std::vector<char>> incoming = si->ReceiveAll();
