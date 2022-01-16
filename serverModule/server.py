@@ -1,25 +1,24 @@
 import configparser
 import logging
-import sys
 import os
-from socketLib import SocketInterface, Socket, Host, get_project_root
-from pynput.keyboard import Key, Listener
-from threading import Thread
-import signal
 
+from FileType import FileType
+from socketLib import SocketInterface, Socket, Host
+from pynput.keyboard import Key, Listener
+import signal
 
 class Server(Host):
     def __init__(self, argv: list):
         super().__init__(argv)
         signal.signal(signal.SIGINT, self.__on_sig_int)
         parser = configparser.ConfigParser()
-        parser.read(get_project_root() + "/serverModule/.config")
+        parser.read(".config")
         self.server_running = True
         self.data_path = parser.get("server", "data_path")
-        self.file_type = parser.get("server", "file_type")
-        self.file_type_descriptor = int(parser.get("server", "file_type_descriptor"))
-        if self.file_type_descriptor != (self.port % 1000):
-            logging.error("File of wrong format received. Please check your configuration")
+        file_type_descriptor = int(parser.get("server", "file_type_descriptor"))
+        self.file_type = FileType(file_type_descriptor)
+        if file_type_descriptor != (self.port % 1000):
+            logging.error("File of wrong format will be received Please check your configuration")
 
     def connect(self) -> None:
         socket = Socket(self.host, self.port)
@@ -29,12 +28,12 @@ class Server(Host):
                 file_id, file_type_descriptor, status_code, hash_hash, content = socket.read()
                 if status_code != 0:
                     logging.info("Received invalid data")
-                elif file_type_descriptor != self.file_type_descriptor:
+                elif file_type_descriptor != self.file_type.value:
                     logging.info("File of wrong format received. Please check your configuration")
                 else:
-                    file_path = f"{self.data_path}{file_id}.{self.file_type}"
+                    file_path = f"{self.data_path}{file_id}.{self.file_type.name}"
                     logging.info(f'Received data: {file_path}')
-                    with open(f"{file_path}", "wb") as file:
+                    with open(f"{file_path}", "wb+") as file:
                         file.write(content)
                         file.flush()
                         os.fsync(file.fileno())
@@ -51,16 +50,3 @@ class Server(Host):
     def get_admin_command(self):
         with Listener(on_release=self.__on_release) as listener:
             listener.join()
-
-
-if __name__ == "__main__":
-    logging.basicConfig(
-        format='%(asctime)s %(levelname)-8s %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S',
-        filename=get_project_root() + '/serverModule/log/server.log',
-        level=logging.DEBUG
-    )
-    server = Server(sys.argv)
-    server_listening = Thread(target=server.connect, daemon=True)
-    server_listening.start()
-    server.get_admin_command()
