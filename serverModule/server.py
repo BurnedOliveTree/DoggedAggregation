@@ -34,7 +34,7 @@ class Server(Host):
                 else:
                     file_path = f"{self.data_path}{file_id}.{self.file_type}"
                     logging.info(f'Received data: {file_path}')
-                    with open(f"data/{file_path}", "wb") as file:
+                    with open(f"{file_path}", "wb") as file:
                         file.write(content)
                         file.flush()
                         os.fsync(file.fileno())
