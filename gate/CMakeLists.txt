@@ -4,8 +4,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_library(
     Everything
+    lib/Header.h
     lib/Host.h
     lib/Host.cpp
+    lib/Agregator.h
+    lib/Agregator.cpp
     lib/DataSerializer.h
     lib/DataSerializer.cpp
     lib/Socket.h
