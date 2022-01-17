@@ -20,8 +20,8 @@ public:
 
     void Send(std::string msg);
     void Send(SimpleStruct msg);
+    void Send(std::vector<char> msg);
 
-    std::vector<std::variant<std::string, SimpleStruct>> ReceiveAll();
     std::variant<std::string, SimpleStruct> Receive(bool echo = false);
     std::vector<char> ReceiveRaw(bool echo = false);
     SimpleStruct HandleStruct(std::vector<char> data);

@@ -15,6 +15,10 @@ void DataSerializer::Send(SimpleStruct msg){
     si->Send(Utils::addHeader<TypeHeader>(th, data));
 }
 
+void DataSerializer::Send(std::vector<char> msg){
+    si->Send(msg);
+}
+
 std::variant<std::string, SimpleStruct> DataSerializer::Receive(bool echo){
     auto [header, msg] = Utils::divideHeader(1,si->Receive(echo));
     TypeHeader th = Utils::deserializeStruct<TypeHeader>(header);
@@ -31,28 +35,6 @@ std::variant<std::string, SimpleStruct> DataSerializer::Receive(bool echo){
 
 std::vector<char> DataSerializer::ReceiveRaw(bool echo){
     return si->ReceiveRaw(echo);
-}
-
-std::vector<std::variant<std::string, SimpleStruct>> DataSerializer::ReceiveAll(){
-    std::vector<std::variant<std::string, SimpleStruct>> result;
-    std::vector<std::vector<char>> incoming = si->ReceiveAll();
-    for(int i = 0; i < incoming.size(); i++){
-        auto [header, msg] = Utils::divideHeader(1, incoming[i]);
-        TypeHeader th = Utils::deserializeStruct<TypeHeader>(header);
-        switch (th.type)
-        {
-        case 0:
-            result.push_back(HandleString(msg));
-            break;
-        case 1:
-            result.push_back(HandleStruct(msg));
-            break;
-        default:
-            result.push_back(std::string("Error: type of message unknown"));
-            break;
-        }
-    }
-    return result;
 }
 
 SimpleStruct DataSerializer::HandleStruct(std::vector<char> data){

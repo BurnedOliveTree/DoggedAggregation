@@ -12,30 +12,16 @@ Socket::Socket(std::string ip, int port, bool is_serv,bool is_UDP){
 
         if( inet_pton( AF_INET, socket_ip.c_str(), & desc_4.sin_addr ) <= 0 )
         {
-            throw std::runtime_error("inet_pton didn't convert IP!!");
+            throw std::runtime_error("inet_pton didn't convert IP");
         }
         if(is_UDP){
             sock = socket( AF_INET, SOCK_DGRAM, 0 );
-            if(( sock ) < 0 )
-            {
-                throw std::runtime_error("Socket wasn't created");
-            }
         } else {
             sock = socket( AF_INET, SOCK_STREAM, 0 );
-            if(( sock ) < 0 )
-            {
-                throw std::runtime_error("Socket wasn't created");
-            }
-            if(is_serv){
-                if( setsockopt(sock, SOL_SOCKET,  SO_REUSEADDR, (char *)&on, sizeof(on))<0)
-                {
-                    throw std::runtime_error("Socket didn't allow to be reusable");
-                }
-                if (ioctl(sock, FIONBIO, (char *)&on) < 0)
-                {
-                    throw std::runtime_error("Socket didn't allow to nonblocking");
-                }
-            }
+        }
+        if(( sock ) < 0 )
+        {
+            throw std::runtime_error("Socket wasn't created");
         }
         socket_len = sizeof(desc_4);
         self_addr = (struct sockaddr*) &desc_4;
@@ -95,48 +81,34 @@ void Socket::Connect(){
 }
 
 void Socket::Listen(){
-    listen(sock, 32);
-    memset(fds, 0 , sizeof(fds));
-    fds[0].fd = sock;
-    // std::cout << "Sock: " << std::to_string(sock) << "   Poll: " << std::to_string(fds[0].fd)<< std::endl;
-    fds[0].events = POLLIN;
-    timeout = (3 * 60 * 1000);
+    listen(sock, 2);
+    msgsock = accept(sock,(struct sockaddr *) 0,(socklen_t *) 0); 
 }
 
-std::vector<char> Socket::Read(size_t n_bytes, int which_socket){
+std::vector<char> Socket::Read(size_t n_bytes){
     std::vector<char> buffer(MAX_PACKET_SIZE);
-    int sock_dsc;
-    if(is_server){
-        sock_dsc = fds[which_socket].fd;
-    } else {
-        sock_dsc = sock;
-    }
     int rval = 0, rall = 0;
-    if (fds[which_socket].fd < 0) {
+    if (msgsock < 0) {
         throw std::runtime_error("Couldn't accept connection");
     }
     do {
-        if ((rval =recv(sock_dsc,buffer.data()+rall, n_bytes-rall, 0)) == -1) {
+        if ((rval = read(msgsock,buffer.data()+rall, n_bytes-rall)) == -1) {
             throw std::runtime_error("Error while reading stream");
         }
         rall += rval;
 
-    } while (n_bytes-rall>0 && rall!=0);
+    } while (n_bytes-rall>0);
     buffer.resize(rall);
     return buffer;
 }
 
-void Socket::Write(std::vector<char> msg, int which_socket){
-    int sock_dsc;
-    if(is_server){
-        sock_dsc = fds[which_socket].fd;
-    } else {
-        sock_dsc = sock;
-    }
+void Socket::Write(std::vector<char> msg){
+    struct sockaddr* dst;
+    socklen_t dst_len;
     int sall = 0, sval = 0;
     int bsize = msg.size();
     do{
-        if((sval = send(sock_dsc, msg.data()+sall, bsize-sall, 0)) < 0){
+        if((sval = send(sock, msg.data()+sall, bsize-sall, 0)) < 0){
             throw std::runtime_error("Couldn't write message to stream");
         }
         sall += sval;

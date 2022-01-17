@@ -8,10 +8,13 @@ Gate::Gate(std::string ip, int pt, int nsv):agregator(nsv){
     sensorI = new SocketUDP(ipAdress, port,true);
     sensorGate = new Host(sensorI);
     std::map<uint16_t, std::vector<std::vector<char>>> buff;
-    for(int i =0; i<4; i++){
-        serwerI.push_back(new SocketTCP(ipAdress, port+1+i,true));
-        serwerGate.push_back(new Host(serwerI[i]));
+    std::cout<<"Waiting for connection from servers: 0/" << std::to_string(nServers) << std::endl;
+    for(int i =0; i<nServers; i++){
+        // serwerI.push_back(new SocketTCP(ipAdress, port+1+i,true));
+        // serwerGate.push_back(new Host(serwerI[i]));
+        std::cout<<"Waiting for connection from servers: "<<std::to_string(i) << "/" << std::to_string(nServers) << std::endl;
     }
+    std::cout<<"All servers connected\n";
 }
 
 Gate::~Gate(){
@@ -25,7 +28,6 @@ Gate::~Gate(){
 
 bool Gate::AgregateData(uint8_t which_server, uint16_t document_id, uint16_t part, uint16_t all_parts, std::vector<char> data, int timestamp)
 {
-    std::cout<<"which ser: " << unsigned(which_server) << "\ndocument_id: " << document_id << "\nparts: " << part << "/"<< all_parts << "\ntimestamp: " << timestamp << "\n";  
     if(agregator.docBuilder[which_server].count(document_id)){
         //dokument już tu jest
         if(agregator.packetCounter[which_server][document_id]!=part){
@@ -50,7 +52,7 @@ bool Gate::AgregateData(uint8_t which_server, uint16_t document_id, uint16_t par
 
 std::vector<char> Gate::ConstructDocumentMsg(uint8_t which_server, uint16_t document_id){
     std::vector<char> msg = agregator.docBuilder[which_server][document_id];
-    AgregatedHeader ah = {document_id, which_server, agregator.error[which_server][document_id], 0};   //Tutaj za to zero musi być hash
+    AgregatedHeader ah = {htons(document_id), which_server, agregator.error[which_server][document_id], htonl(0)};   //Tutaj za to zero musi być hash
     msg = Utils::addHeader<AgregatedHeader>(ah,msg);
     EraseAgregatedData(which_server, document_id);
     return msg;

@@ -9,5 +9,4 @@ public:
     void Send(std::vector<char> msg) override;
     std::vector<char> Receive(bool echo= false) override;
     std::vector<char> ReceiveRaw(bool echo = false) override;
-    std::vector<std::vector<char>> ReceiveAll() override;
 };

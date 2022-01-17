@@ -13,14 +13,14 @@ void Host::Send(std::variant<std::string, SimpleStruct> msg){
     }
 }
 
+void Host::Send(std::vector<char> msg){
+    ws.Send(msg);
+}
+
 std::variant<std::string, SimpleStruct> Host::Receive(bool echo){
     return ws.Receive(echo);
 }
 
 std::vector<char> Host::ReceiveRaw(bool echo){
     return ws.ReceiveRaw(echo);
-}
-
-std::vector<std::variant<std::string, SimpleStruct>> Host::ReceiveAll(){
-    return ws.ReceiveAll();
 }

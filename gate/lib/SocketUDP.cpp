@@ -42,11 +42,6 @@ std::vector<char> SocketUDP::ReceiveRaw(bool echo){
     return rec;
 }
 
-std::vector<std::vector<char>> SocketUDP::ReceiveAll(){
-    std::vector<std::vector<char>> result;
-    result.push_back(Receive());
-    return result;
-}
 
 
 
