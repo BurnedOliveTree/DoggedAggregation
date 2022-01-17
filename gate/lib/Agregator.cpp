@@ -5,5 +5,6 @@ Agregator::Agregator(int nSerwers){
         docBuilder.emplace_back();
         timestamps.emplace_back();
         packetCounter.emplace_back();
+        error.emplace_back();
     }
 }

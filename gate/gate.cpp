@@ -21,10 +21,14 @@ int main() {
         Utils::printVector(data);
         Utils::printVector(ph_raw);
         Utils::printVector(sh_raw);
+
         auto sh = Utils::deserializeStruct<DocumentHeader>(sh_raw);
         auto ph = Utils::deserializeStruct<PHeader>(ph_raw);
-        std::cout << sh.documentId << "\n";
-        std::cout << unsigned(sh.documentType)<< "\n" ;
-        std::cout <<unsigned(sh.type) << "\n";
+        if(gate.AgregateData(sh.documentType,sh.documentId,ntohs(ph.current),ntohs(ph.total),data,ntohs(ph.timestamp))){
+            std::vector<char> msg = gate.ConstructDocumentMsg(sh.documentType,sh.documentId);
+            Utils::printVector(msg);
+            std::cout<<"TAK\n";
+        }
+
     }
 }
