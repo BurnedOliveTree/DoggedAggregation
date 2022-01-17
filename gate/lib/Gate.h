@@ -22,6 +22,6 @@ public:
     std::vector<Host*> serwerGate;
     Gate(std::string ip = "127.0.0.1", int pt = 8000, int nsv=4);
     ~Gate();
-    bool AgregateData(uint8_t which_server, uint16_t document_id, std::vector<char> data);
+    bool AgregateData(uint8_t which_server, uint16_t document_id, uint16_t part, uint16_t all_parts, std::vector<char> data, int timestamp);
 
 };

@@ -23,8 +23,25 @@ Gate::~Gate(){
     }
 }
 
-bool Gate::AgregateData(uint8_t which_server, uint16_t document_id, std::vector<char> data)
+bool Gate::AgregateData(uint8_t which_server, uint16_t document_id, uint16_t part, uint16_t all_parts, std::vector<char> data, int timestamp)
 {
-
+    if(agregator.docBuilder[which_server].count(document_id)){
+        //dokument już tu jest
+        if(agregator.packetCounter[which_server][document_id]<=part){
+            return false;
+        }
+        else{
+            agregator.docBuilder[which_server][document_id].insert( agregator.docBuilder[which_server][document_id].end(), data.begin(), data.end());
+            agregator.packetCounter[which_server][document_id]++;
+        }
+    }
+    else{
+            agregator.docBuilder[which_server][document_id] = data;
+            agregator.packetCounter[which_server][document_id] = 1;
+            agregator.timestamps[which_server][document_id] = timestamp;
+        }
+    if(agregator.packetCounter[which_server][document_id] = all_parts){
+        return true;
+    } 
 }
 

@@ -56,4 +56,12 @@ std::map<std::string, std::string> readConfig() {
     return result;
 }
 
+std::vector<char> joinData(std::vector<std::vector<char>> data){
+    std::vector<char> msg = data[0];
+    for(int i = 1; i<data.size();i++){
+        msg.insert( msg.end(), data[i].begin(), data[i].end());
+    }
+}
+
+
 }

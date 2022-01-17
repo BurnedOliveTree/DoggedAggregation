@@ -55,4 +55,6 @@ void printVector(std::vector<char> vc);
 std::vector<std::vector<char>> splitData(std::vector<char>data, size_t maxsize);
 std::map<std::string, std::string> readConfig();
 
+std::vector<char> joinData(std::vector<std::vector<char>>data);
+
 }
