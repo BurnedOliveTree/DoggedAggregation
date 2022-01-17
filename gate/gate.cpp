@@ -7,9 +7,13 @@
 #include <variant>
 #include <thread>
 
+std::string ipAdress = "192.168.112.55";
+int port = 8000;
+int nServers =4;
+
 int main() {
     std::atomic<bool> isProgramRunning = true;
-    auto gate = Gate();
+    auto gate = Gate(ipAdress, port, nServers);
     auto timer = &Timer::getInstance();
     std::vector<char> raw;
     
@@ -24,7 +28,7 @@ int main() {
         if(gate.AgregateData(sh.documentType,sh.documentId,ntohs(ph.current),ntohs(ph.total),data,ntohs(ph.timestamp))){
             std::vector<char> msg = gate.ConstructDocumentMsg(sh.documentType,sh.documentId);
             Utils::printVector(msg);
-            gate.serwerGate[sh.documentType]->Send(msg);
+            // gate.serwerGate[sh.documentType]->Send(msg);
         }
 
     }
