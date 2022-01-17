@@ -11,10 +11,15 @@ int main() {
     std::atomic<bool> isProgramRunning = true;
     auto gate = Gate();
     auto timer = &Timer::getInstance();
-    std::vector<char> msg;
+    std::vector<char> raw;
     
     while (isProgramRunning) {
-        msg = gate.sensorGate->ReceiveRaw(true);
-        Utils::printVector(msg);
+        raw = gate.sensorGate->ReceiveRaw(true);
+        Utils::printVector(raw);
+        auto [ph_raw, msg] = Utils::divideHeader(sizeof(PHeader), raw);
+        auto [sh_raw, data] = Utils::divideHeader(sizeof(StandardHeader), msg);
+        Utils::printVector(data);
+        auto sh = Utils::deserializeStruct<StandardHeader>(sh_raw);
+        auto ph = Utils::deserializeStruct<PHeader>(ph_raw);
     }
 }

@@ -12,6 +12,12 @@ struct StandardHeader {
     uint8_t type;
 };
 
+struct PHeader{
+    uint16_t timestamp;
+    uint32_t total;
+    uint32_t current;
+};
+
 class Gate{ 
     std::string ipAdress;
     int port, nServers;
