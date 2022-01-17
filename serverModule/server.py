@@ -1,4 +1,6 @@
+import base64
 import configparser
+import hashlib
 import logging
 import sys
 import os
@@ -6,7 +8,12 @@ from socketLib import SocketInterface, Socket, Host, get_project_root
 from pynput.keyboard import Key, Listener
 from threading import Thread
 import signal
-
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
+import rsa
+from base64 import b64decode
+from AesEverywhere import aes256
+from Crypto.Cipher import AES
 
 class Server(Host):
     def __init__(self, argv: list):
@@ -14,6 +21,8 @@ class Server(Host):
         signal.signal(signal.SIGINT, self.__on_sig_int)
         parser = configparser.ConfigParser()
         parser.read(get_project_root() + "/serverModule/.config")
+        self.hash_alg = hashlib.sha3_256()
+        self.cipher = AES.new(b'Sixteen byte key', AES.MODE_EAX)
         self.server_running = True
         self.data_path = parser.get("server", "data_path")
         self.file_type = parser.get("server", "file_type")
@@ -31,6 +40,8 @@ class Server(Host):
                     logging.info("Received invalid data")
                 elif file_type_descriptor != self.file_type_descriptor:
                     logging.info("File of wrong format received. Please check your configuration")
+                elif not self.check_hash(hash_hash, content):
+                    logging.warning("Unknown gate")
                 else:
                     file_path = f"{self.data_path}{file_id}.{self.file_type}"
                     logging.info(f'Received data: {file_path}')
@@ -38,6 +49,12 @@ class Server(Host):
                         file.write(content)
                         file.flush()
                         os.fsync(file.fileno())
+
+    def check_hash(self, hashed_data, data):
+        # hash_data = self.cipher.decrypt(hashed_data)
+        self.hash_alg.update(data)
+        dupa = self.hash_alg.digest()
+        return dupa == hashed_data
 
     def __on_release(self, key):
         if key == Key.esc:
