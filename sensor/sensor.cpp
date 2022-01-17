@@ -18,10 +18,13 @@ void timeSynchronization(Host* client, std::atomic<bool> isProgramRunning) {
     }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+    if (argc < 2) {
+        throw std::invalid_argument("Please specify type of data! (0-3)");
+    }
     std::atomic<bool> isProgramRunning = true;
     auto timer = &Timer::getInstance();
-    auto messages = DocumentContainer(isProgramRunning);
+    auto messages = DocumentContainer(isProgramRunning, static_cast<DocumentType>(atoi(argv[1])));
     SocketInterface* socketInterface;
     Host* client;
 
