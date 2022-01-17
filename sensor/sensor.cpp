@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
             auto currentMessage = messages.get();
             client->exchange(currentMessage.message, currentMessage.documentId, currentMessage.documentType);
         }
-        std::this_thread::sleep_for(timer->tick);
+        std::this_thread::sleep_for(5 * timer->tick);
     }
 
     delete client;
