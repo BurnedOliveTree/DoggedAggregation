@@ -7,7 +7,7 @@
 #include <variant>
 #include <thread>
 
-std::string ipAdress = "127.0.0.1";
+std::string ipAdress = "192.168.119.22";
 int port = 8000;
 int nServers =4;
 

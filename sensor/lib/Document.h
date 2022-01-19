@@ -34,10 +34,11 @@ class DocumentContainer {
     std::atomic<bool>& isProgramRunning;
     std::mutex internalMutex;
     std::thread internalThread;
+    DocumentType type;
 
     void generateData();
 public:
-    explicit DocumentContainer(std::atomic<bool> &isProgramRunning);
+    explicit DocumentContainer(std::atomic<bool> &isProgramRunning, DocumentType type);
     bool isEmpty();
     Document get();
 };
