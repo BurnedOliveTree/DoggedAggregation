@@ -7,7 +7,7 @@
 #include <variant>
 #include <thread>
 
-std::string ipAdress = "192.168.112.55";
+std::string ipAdress = "127.0.0.1";
 int port = 8000;
 int nServers =4;
 
@@ -30,6 +30,5 @@ int main() {
             Utils::printVector(msg);
             // gate.serwerGate[sh.documentType]->Send(msg);
         }
-
     }
 }
