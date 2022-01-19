@@ -4,8 +4,8 @@
 
 struct PacketHeader{
     uint16_t timestamp;
-    uint32_t total;
-    uint32_t current;
+    uint16_t total;
+    uint16_t current;
 };
 
 class SocketInterface{

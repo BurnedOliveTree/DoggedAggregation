@@ -1,7 +1,8 @@
 #include "Document.h"
 
-DocumentContainer::DocumentContainer(std::atomic<bool> &isProgramRunning): isProgramRunning(isProgramRunning) {
+DocumentContainer::DocumentContainer(std::atomic<bool> &isProgramRunning, DocumentType argType): isProgramRunning(isProgramRunning) {
     dataContainer = std::queue<Document>();
+    type = argType;
     internalThread = std::thread(&DocumentContainer::generateData, this);
 }
 
@@ -11,11 +12,11 @@ void DocumentContainer::generateData() {
     while (isProgramRunning) {
         std::cout << "[sensor.cpp:36] Generated data" << std::endl;
         internalMutex.lock();
-        dataContainer.push(Document("random number: " + std::to_string(counter), counter / 10, TXT));
+        dataContainer.push(Document("random number: " + std::to_string(counter), counter, type));
         internalMutex.unlock();
         std::this_thread::sleep_for(std::chrono::nanoseconds(random() % 4000000000 + 1000000000));
         counter++;
-        if (counter == 20)
+        if (counter == 100)
             isProgramRunning = false;
     }
 }
