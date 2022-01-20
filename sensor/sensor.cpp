@@ -5,7 +5,7 @@
 #include <iostream>
 #include <thread>
 
-std::string ipAdress = "192.168.112.55";
+std::string ipAdress = "127.0.0.1";
 int port = 8000;
 
 void timeSynchronization(Host* client, std::atomic<bool> isProgramRunning) {

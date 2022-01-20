@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <string>
 
 struct DocumentHeader {
     uint16_t documentId;
@@ -17,7 +18,7 @@ struct AgregatedHeader {
     uint16_t documentId;
     uint8_t documentType;
     uint8_t statusCode;
-    uint32_t hash;
+    std::string hash;
 };
 
 struct THeader{

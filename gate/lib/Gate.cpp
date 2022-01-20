@@ -1,5 +1,7 @@
 #include "Gate.h"
 #include <iostream>
+#include "SHA256.h"
+
 
 Gate::Gate(std::string ip, int pt, int nsv):agregator(nsv){
     ipAdress = ip;
@@ -52,10 +54,18 @@ bool Gate::AgregateData(uint8_t which_server, uint16_t document_id, uint16_t par
 
 std::vector<char> Gate::ConstructDocumentMsg(uint8_t which_server, uint16_t document_id){
     std::vector<char> msg = agregator.docBuilder[which_server][document_id];
-    AgregatedHeader ah = {htons(document_id), which_server, agregator.error[which_server][document_id], htonl(0)};   //Tutaj za to zero musi być hash
-    msg = Utils::addHeader<AgregatedHeader>(ah,msg);
+    std::string hash = Gate::GetHash(Utils::deserializeString(msg));
+    AgregatedHeader ah = {htons(document_id), which_server, agregator.error[which_server][document_id], hash};
+    msg = Utils::addHeader<AgregatedHeader>(ah, msg);
     EraseAgregatedData(which_server, document_id);
     return msg;
+}
+
+std::string Gate::GetHash(std::string data){
+    SHA256 sha;
+    sha.update(data);
+    uint8_t * digest = sha.digest();
+    return SHA256::toString(digest).substr(0, 32);
 }
 
 void Gate::EraseAgregatedData(uint8_t which_server, uint16_t document_id){
