@@ -6,6 +6,7 @@
 #include <memory>
 #include <variant>
 #include <thread>
+#include "lib/SHA256.h"
 
 std::string ipAdress = "192.168.112.55";
 int port = 8000;
@@ -16,7 +17,7 @@ int main() {
     auto gate = Gate(ipAdress, port, nServers);
     auto timer = &Timer::getInstance();
     std::vector<char> raw;
-    
+
     while (isProgramRunning) {
         raw = gate.sensorGate->ReceiveRaw(true);
         Utils::printVector(raw);
@@ -31,5 +32,11 @@ int main() {
             // gate.serwerGate[sh.documentType]->Send(msg);
         }
 
-    }
+//    std::string s = "aa";
+//    SHA256 sha;
+//    sha.update(s);
+//    uint8_t * digest = sha.digest();
+//
+//    std::cout << SHA256::toString(digest) << std::endl;
+
 }

@@ -1,4 +1,3 @@
-import base64
 import configparser
 import hashlib
 import logging
@@ -8,12 +7,8 @@ from socketLib import SocketInterface, Socket, Host, get_project_root
 from pynput.keyboard import Key, Listener
 from threading import Thread
 import signal
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP
-import rsa
-from base64 import b64decode
-from AesEverywhere import aes256
 from Crypto.Cipher import AES
+
 
 class Server(Host):
     def __init__(self, argv: list):
@@ -21,7 +16,7 @@ class Server(Host):
         signal.signal(signal.SIGINT, self.__on_sig_int)
         parser = configparser.ConfigParser()
         parser.read(get_project_root() + "/serverModule/.config")
-        self.hash_alg = hashlib.sha3_256()
+        self.hash_alg = hashlib.sha256()
         self.cipher = AES.new(b'Sixteen byte key', AES.MODE_EAX)
         self.server_running = True
         self.data_path = parser.get("server", "data_path")
@@ -51,10 +46,10 @@ class Server(Host):
                         os.fsync(file.fileno())
 
     def check_hash(self, hashed_data, data):
-        # hash_data = self.cipher.decrypt(hashed_data)
+        # hashed_data = self.cipher.decrypt(hashed_data)
         self.hash_alg.update(data)
-        dupa = self.hash_alg.digest()
-        return dupa == hashed_data
+        temp = self.hash_alg.digest()
+        return temp == hashed_data
 
     def __on_release(self, key):
         if key == Key.esc:
