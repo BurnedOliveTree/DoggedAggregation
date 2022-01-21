@@ -6,3 +6,6 @@ class FileType(Enum):
     png = 1
     txt = 2
     doc = 3
+
+    def __str__(self):
+        return self.name
