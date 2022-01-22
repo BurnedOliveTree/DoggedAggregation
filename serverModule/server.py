@@ -31,7 +31,7 @@ class Server(Host):
                 elif file_type_descriptor != self.file_type.value:
                     logging.info("File of wrong format received. Please check your configuration")
                 else:
-                    file_path = f"{self.data_path}{file_id}.{self.file_type.name}"
+                    file_path = f"{self.data_path}{file_id}_{self.file_type.name}.txt"
                     logging.info(f'Received data: {file_path}')
                     with open(f"{file_path}", "wb+") as file:
                         file.write(content)

@@ -104,18 +104,17 @@ std::vector<char> Socket::Read(size_t n_bytes){
 }
 
 void Socket::Write(std::vector<char> msg){
-    struct sockaddr* dst;
-    socklen_t dst_len;
     int sall = 0, sval = 0;
     int bsize = msg.size();
-    std::cout<< "TCP msg:\n";
-    Utils::printVector(msg);
+    std::cout <<"is Nice?\n";
     do{
-        if((sval = send(msgsock, msg.data()+sall, bsize-sall, 0)) < 0){  // not sure if sock or msgsock
+        if((sval = send(msgsock, msg.data()+sall, bsize-sall, 0)) < 0){
             throw std::runtime_error("Couldn't write message to stream");
         }
         sall += sval;
+
     } while(bsize-sall>0);
+    std::cout <<"Nice!\n";
 }
 
 void Socket::Send(std::vector<char> msg){
