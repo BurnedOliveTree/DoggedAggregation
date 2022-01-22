@@ -1,4 +1,5 @@
 #include "SocketUDP.h"
+#include <iostream>
 
 SocketUDP::SocketUDP(const std::string& ipAddress, int port): sock(ipAddress, port) {
     timeoutAfter = std::stoul(Utils::readConfig()["timeoutAfter"]);

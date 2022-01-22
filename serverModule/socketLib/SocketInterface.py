@@ -5,7 +5,7 @@ class SocketInterface:
     def __init__(self, socket):
         self.binary_stream = None
         self.socket = socket
-        self.header_types = '!HBB16s'  # TODO Mariannkaaa!
+        self.header_types = '!HBB32s'
 
     def connect(self) -> None or bool:
         self.binary_stream = io.BytesIO()
