@@ -9,7 +9,7 @@ class DataSerializer{
 public:
     explicit DataSerializer();
     static std::pair<StandardHeader, std::vector<char>> serialize(std::string message, uint16_t documentId, uint8_t documentType);
-    static std::vector<char> serialize(uint16_t time, uint16_t documentId, uint8_t documentType);
+    static std::pair<StandardHeader, std::vector<char>> serialize(uint16_t time, uint16_t documentId, uint8_t documentType);
     static std::variant<std::string, uint16_t> deserialize(std::vector<char> data);
     static void printVariant(std::variant<std::string, uint16_t> msg);
 };

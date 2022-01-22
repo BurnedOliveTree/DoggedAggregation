@@ -17,7 +17,6 @@ struct StandardHeader {
 class SocketInterface{
 public:
     virtual ~SocketInterface() = default;
-    virtual void exchange(StandardHeader, std::vector<char>) = 0;
-    virtual void send(std::vector<char> message) = 0;
-    virtual std::vector<char> receive(int flag = 0) = 0;
+    virtual void send(StandardHeader, std::vector<char>) = 0;
+    virtual std::vector<char> receive(uint8_t flag) = 0;
 };

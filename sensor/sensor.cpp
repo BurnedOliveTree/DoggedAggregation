@@ -11,10 +11,13 @@ int port = 8000;
 void timeSynchronization(Host* client, std::atomic<bool> isProgramRunning) {
     auto timer = &Timer::getInstance();
     while (isProgramRunning) {
-        auto newTime = client->receiveTime();
-        auto latency = Utils::ping() / timer->tick;
-        timer->setCounter(newTime + latency);
-        std::this_thread::sleep_for(timer->tick / 10);
+        auto variant = client->receive(1);
+        if (std::get_if<uint16_t>(&variant)) {
+            auto newTime = std::get<uint16_t>(variant);
+            auto latency = Utils::ping() / timer->tick;
+            timer->setCounter(newTime + latency);
+            std::this_thread::sleep_for(timer->tick / 10);
+        }
     }
 }
 
@@ -37,7 +40,7 @@ int main(int argc, char *argv[]) {
     while (isProgramRunning) {
         if (!messages.isEmpty()) {
             auto currentMessage = messages.get();
-            client->exchange(currentMessage.message, currentMessage.documentId, currentMessage.documentType);
+            client->send(currentMessage.message, currentMessage.documentId, currentMessage.documentType);
         }
         std::this_thread::sleep_for(5 * timer->tick);
     }
