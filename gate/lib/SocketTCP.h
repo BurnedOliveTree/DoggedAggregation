@@ -1,7 +1,6 @@
 #pragma once
 
 #include "SocketInterface.h"
-#include "Header.h"
 
 
 class SocketTCP: public SocketInterface{

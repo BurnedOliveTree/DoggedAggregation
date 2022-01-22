@@ -108,8 +108,10 @@ void Socket::Write(std::vector<char> msg){
     socklen_t dst_len;
     int sall = 0, sval = 0;
     int bsize = msg.size();
+    std::cout<< "TCP msg:\n";
+    Utils::printVector(msg);
     do{
-        if((sval = send(sock, msg.data()+sall, bsize-sall, 0)) < 0){
+        if((sval = send(msgsock, msg.data()+sall, bsize-sall, 0)) < 0){  // not sure if sock or msgsock
             throw std::runtime_error("Couldn't write message to stream");
         }
         sall += sval;

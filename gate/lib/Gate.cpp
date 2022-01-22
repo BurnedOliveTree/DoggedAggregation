@@ -5,16 +5,16 @@ Gate::Gate(std::string ip, int pt, int nsv):agregator(nsv){
     ipAdress = ip;
     port = pt;
     nServers = nsv;
-    sensorI = new SocketUDP(ipAdress, port,true);
-    sensorGate = new Host(sensorI);
     std::map<uint16_t, std::vector<std::vector<char>>> buff;
     std::cout<<"Waiting for connection from servers: 0/" << std::to_string(nServers) << std::endl;
     for(int i =0; i<nServers; i++){
-        // serwerI.push_back(new SocketTCP(ipAdress, port+1+i,true));
-        // serwerGate.push_back(new Host(serwerI[i]));
+        serwerI.push_back(new SocketTCP(ipAdress, port+1+i,true));
+        serwerGate.push_back(new Host(serwerI[i]));
         std::cout<<"Waiting for connection from servers: "<<std::to_string(i+1) << "/" << std::to_string(nServers) << std::endl;
     }
-    std::cout<<"All servers connected\n";
+    sensorI = new SocketUDP(ipAdress, port,true);
+    sensorGate = new Host(sensorI);
+    std::cout<<"All servers connected, listening to sensors...\n";
 }
 
 Gate::~Gate(){

@@ -15,8 +15,7 @@ void SocketTCP::Send(std::vector<char> msg){
     std::vector<std::vector<char>> splited_msg = Utils::splitData(msg, MAX_PACKET_SIZE-sizeof(THeader));
     for(int i = 0; i < splited_msg.size(); i++)
     {
-        Utils::printVector(splited_msg[i]);
-        THeader ph = { htons(static_cast<uint16_t>(splited_msg.size())),htons(static_cast<uint16_t>(i)), static_cast<uint64_t>(splited_msg[i].size()) };
+        THeader ph = { htons(static_cast<uint16_t>(splited_msg.size())),htons(static_cast<uint16_t>(i)), htonl(static_cast<uint32_t>(splited_msg[i].size())) };
         sock.Write(Utils::addHeader(Utils::serializeStruct<THeader>(ph), splited_msg[i]));
     }
 }
