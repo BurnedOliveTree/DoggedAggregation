@@ -25,6 +25,6 @@ public:
     bool AgregateData(uint8_t which_server, uint16_t document_id, uint16_t part, uint16_t all_parts, std::vector<char> data, int timestamp);
     void EraseAgregatedData(uint8_t which_server, uint16_t document_id);
     std::vector<char> ConstructDocumentMsg(uint8_t which_server, uint16_t document_id);
-    std::string GetHash(std::string data);
-
+    uint8_t* Hash(std::string data);
+    uint8_t* GetHash(std::string data);
 };

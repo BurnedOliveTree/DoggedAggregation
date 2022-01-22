@@ -6,6 +6,8 @@
 #include <memory>
 #include <variant>
 #include <thread>
+#include "lib/SHA256.h"
+#include <string>
 
 std::string ipAdress = "127.0.0.1";
 int port = 8000;
@@ -20,7 +22,7 @@ int main(int argc, char *argv[]) {
     auto gate = Gate(ipAdress, port, nServers);
     auto timer = &Timer::getInstance();
     std::vector<char> raw;
-    
+
     while (isProgramRunning) {
         raw = gate.sensorGate->ReceiveRaw(true);
         auto [ph_raw, msg] = Utils::divideHeader(sizeof(PHeader), raw);

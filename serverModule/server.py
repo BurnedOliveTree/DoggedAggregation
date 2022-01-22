@@ -4,7 +4,7 @@ import logging
 import sys
 import os
 
-from serverModule.FileType import FileType
+from FileType import FileType
 from socketLib import SocketInterface, Socket, Host
 from pynput.keyboard import Key, Listener
 from threading import Thread

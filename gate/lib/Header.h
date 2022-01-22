@@ -18,7 +18,7 @@ struct AgregatedHeader {
     uint16_t documentId;
     uint8_t documentType;
     uint8_t statusCode;
-    std::string hash;
+    uint8_t hash;
 };
 
 struct THeader{
