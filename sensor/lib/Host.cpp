@@ -7,18 +7,16 @@ Host::Host(SocketInterface* si) {
 void Host::exchange(std::variant<std::string, uint16_t> msg, uint16_t documentId, uint8_t documentType) {
     std::string* srg_msg = std::get_if<std::string>(&msg);
     if (srg_msg) {
-        socketInterface->exchange(DataSerializer::serialize(*srg_msg, documentId, documentType));
-    }
-    uint16_t* stc_msg = std::get_if<uint16_t>(&msg);
-    if (stc_msg) {
-        socketInterface->exchange(DataSerializer::serialize(*stc_msg, documentId, documentType));
+        auto [header, body] = DataSerializer::serialize(*srg_msg, documentId, documentType);
+        socketInterface->exchange(header, body);
     }
 }
 
 void Host::send(std::variant<std::string, uint16_t> msg, uint16_t documentId, uint8_t documentType) {
     std::string* srg_msg = std::get_if<std::string>(&msg);
     if (srg_msg) {
-        socketInterface->send(DataSerializer::serialize(*srg_msg, documentId, documentType));
+        auto [header, body] = DataSerializer::serialize(*srg_msg, documentId, documentType);
+        socketInterface->send(Utils::addHeader(header, body));
     }
     uint16_t* stc_msg = std::get_if<uint16_t>(&msg);
     if (stc_msg) {

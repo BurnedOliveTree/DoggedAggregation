@@ -2,10 +2,10 @@
 
 DataSerializer::DataSerializer() = default;
 
-std::vector<char> DataSerializer::serialize(std::string message, uint16_t documentId, uint8_t documentType){
+std::pair<StandardHeader, std::vector<char>> DataSerializer::serialize(std::string message, uint16_t documentId, uint8_t documentType){
     StandardHeader typeHeader = { documentId, documentType, 0};
     std::vector<char> data = Utils::serializeString(message);
-    return Utils::addHeader<StandardHeader>(typeHeader, data);
+    return std::make_pair(typeHeader, data);
 }
 
 std::vector<char> DataSerializer::serialize(uint16_t time, uint16_t documentId, uint8_t documentType){
