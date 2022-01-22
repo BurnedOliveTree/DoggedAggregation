@@ -13,7 +13,7 @@ class Server(Host):
     def __init__(self, argv: list):
         args = self.__parse_args(argv)
         super().__init__(args[:-1])
-        file_type_descriptor = int(argv[-1])
+        file_type_descriptor = int(args[-1])
         signal.signal(signal.SIGINT, self.__on_sig_int)
         parser = configparser.ConfigParser()
         parser.read(".config")
