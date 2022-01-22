@@ -13,18 +13,18 @@ class Server(Host):
     def __init__(self, argv: list):
         args = self.__parse_args(argv)
         super().__init__(args[:-1])
-        file_type_descriptor = int(args[-1])
         signal.signal(signal.SIGINT, self.__on_sig_int)
         parser = configparser.ConfigParser()
         parser.read(".config")
         self.server_running = True
         self.data_path = parser.get("server", "data_path")
-        if file_type_descriptor is None:
+        if args[-1] is not None:
+            file_type_descriptor = int(args[-1])
+        else:
             file_type_descriptor = int(parser.get("server", "file_type_descriptor"))
         self.file_type = FileType(file_type_descriptor)
         if file_type_descriptor != ((self.port % 1000) + 1):
             logging.error("File of wrong format will be received Please check your configuration")
-        print(self.file_type, file_type_descriptor)
 
     @staticmethod
     def __parse_args(argv):
