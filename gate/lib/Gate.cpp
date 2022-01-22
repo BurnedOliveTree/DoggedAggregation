@@ -12,7 +12,7 @@ Gate::Gate(std::string ip, int pt, int nsv):agregator(nsv){
     for(int i =0; i<nServers; i++){
         // serwerI.push_back(new SocketTCP(ipAdress, port+1+i,true));
         // serwerGate.push_back(new Host(serwerI[i]));
-        std::cout<<"Waiting for connection from servers: "<<std::to_string(i) << "/" << std::to_string(nServers) << std::endl;
+        std::cout<<"Waiting for connection from servers: "<<std::to_string(i+1) << "/" << std::to_string(nServers) << std::endl;
     }
     std::cout<<"All servers connected\n";
 }

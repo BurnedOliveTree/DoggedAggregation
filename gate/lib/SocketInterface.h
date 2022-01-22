@@ -1,6 +1,7 @@
 #pragma once
 #include "Socket.h"
 #include "Utils.h"
+#include "Header.h"
 
 struct PacketHeaderTCP{
     uint16_t length;
@@ -8,11 +9,6 @@ struct PacketHeaderTCP{
     uint8_t curr_packet;
 };
 
-struct PacketHeaderUDP{
-    uint16_t timestamp;
-    uint32_t total;
-    uint32_t current;
-};
 
 class SocketInterface{
 public:
