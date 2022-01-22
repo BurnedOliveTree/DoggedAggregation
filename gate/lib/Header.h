@@ -24,5 +24,5 @@ struct AgregatedHeader {
 struct THeader{
     uint16_t total;
     uint16_t current;
-    uint64_t size;
+    uint32_t size;
 };

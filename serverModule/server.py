@@ -1,4 +1,3 @@
-import binascii
 import configparser
 import hashlib
 import logging
