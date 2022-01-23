@@ -9,6 +9,8 @@ from FileType import FileType
 from socketLib import SocketInterface, Socket, Host
 from pynput.keyboard import Key, Listener
 import signal
+from Cryptodome.Cipher import AES
+
 
 
 class Server(Host):
@@ -60,9 +62,10 @@ class Server(Host):
 
     def check_hash(self, hashed_data, data):
         hash_alg = hashlib.sha256()
-        # hash_data = self.cipher.decrypt(hashed_data)
+        cipher = AES.new(b'\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f', AES.MODE_ECB)
         hash_alg.update(data)
-        temp = hash_alg.digest()[:4]
+        temp = hash_alg.digest()
+        temp = cipher.encrypt(temp)[:4]
         print(f"hash: {int.from_bytes(temp, 'little')}\nencrypted: {hashed_data}\n")
         return int.from_bytes(temp, 'little') == hashed_data
 

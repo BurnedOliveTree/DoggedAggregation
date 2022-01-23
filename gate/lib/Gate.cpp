@@ -73,9 +73,13 @@ uint32_t Gate::GetHash(std::string data){
     SHA256 sha;
     sha.update(data);
     uint8_t* digest = sha.digest();
+    AES aes(AESKeyLength::AES_128);
     std::vector<char> short_hash;
+    unsigned char key[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
+    unsigned int len = 0;
+    uint8_t *out = aes.EncryptECB(digest, (16 * sizeof(unsigned char) * 2) * sizeof(unsigned char), key, len);
     for (int i = 0; i < 4; i++){
-        short_hash.push_back(digest[i]);
+        short_hash.push_back(out[i]);
     }
     uint32_t* st = reinterpret_cast<uint32_t*>(short_hash.data());
     return *st;
