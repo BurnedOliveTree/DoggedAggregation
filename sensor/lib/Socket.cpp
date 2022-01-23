@@ -38,7 +38,7 @@ std::vector<char> Socket::receive(int flag) {
     if (result < 0)
         throw std::runtime_error("Couldn't deserialize message from server");
     if (flag != MSG_PEEK)
-        std::cout << "[Socket.cpp:40] Received message from server" << std::endl;
+        std::cout << "[Socket.cpp:41] Received message from server" << std::endl;
     buffer.resize(result);
     return buffer;
 }
@@ -46,7 +46,7 @@ std::vector<char> Socket::receive(int flag) {
 void Socket::send(std::vector<char> message) {
     if (sendto(socket_fd, message.data(), message.size(), 0, self_addr, socket_len) < 0)
         throw std::runtime_error("Couldn't serialize message to server");
-    std::cout << "[Socket.cpp:48] Sent message to server" << std::endl;
+    std::cout << "[Socket.cpp:49] Sent message to server" << std::endl;
 }
 
 bool Socket::isDataPresent() {
