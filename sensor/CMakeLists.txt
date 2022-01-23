@@ -1,4 +1,5 @@
 project(Sensor)
+cmake_minimum_required(VERSION 3.15)
 set(G++_COVERAGE_COMPILE_FLAG = "-pthread")
 set(CMAKE_CXX_STANDARD 17)
 
@@ -21,4 +22,7 @@ add_library(
         lib/Utils.h)
 
 add_executable(sensor sensor.cpp)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+target_link_libraries(sensor PRIVATE Threads::Threads)
 target_link_libraries(sensor PUBLIC Everything)

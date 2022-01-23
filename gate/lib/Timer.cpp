@@ -17,8 +17,6 @@ void Timer::increment() {
     while (isCounting) {
         std::this_thread::sleep_for(tick);
         counter++;
-        if (!(random() % 10))
-            counter++;
     }
 }
 

@@ -9,7 +9,7 @@ class Socket:
         self.host: str = host
         self.port: str = port
         self.packet_size = 60000
-        self.header_types = '!IIQ'
+        self.header_types = '!HHI'
 
     def connect(self) -> None:
         if not self.socket:

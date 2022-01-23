@@ -63,6 +63,7 @@ namespace Utils {
         char buffer[256];
         auto file = popen("ping 127.0.0.1 -c 1", "r");
         fgets(buffer, 256, file);
+        
         fgets(buffer, 256, file);
         pclose(file);
 
