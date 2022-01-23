@@ -27,6 +27,8 @@ add_library(
     lib/Utils.cpp
     lib/Gate.h
     lib/Gate.cpp
+    lib/SHA256.h
+    lib/SHA256.cpp
 )
 
 add_executable(gate gate.cpp)

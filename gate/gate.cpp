@@ -9,7 +9,7 @@
 
 std::string ipAdress = "127.0.0.1";
 int port = 8000;
-int nServers =2;
+int nServers =1;
 
 int main(int argc, char *argv[]) {
     if (argc == 2){
@@ -39,6 +39,7 @@ int main(int argc, char *argv[]) {
             auto [hed, _] = Utils::divideHeader(sizeof(AgregatedHeader), msg);
             Utils::printVector(hed);
             gate.serwerGate[sh.documentType]->Send(msg);
+            
         }
     }
     std::cout<< "Ending safely"; 
