@@ -8,12 +8,14 @@ DocumentContainer::DocumentContainer(std::atomic<bool> &isProgramRunning, Docume
 
 void DocumentContainer::generateData() {
     uint64_t counter = 0;
-    std::cout << "[sensor.cpp:34] Started to generate data" << std::endl;
+    std::cout << "[sensor.cpp:11] Started to generate data" << std::endl;
+    std::string data = "next numbers: ";
+    for (int i = 0; i < 300; ++i)
+        data += std::to_string(i) + " ";
     while (isProgramRunning) {
-        std::cout << "[sensor.cpp:36] Generated data" << std::endl;
+        std::cout << "[sensor.cpp:16] Generated data" << std::endl;
         internalMutex.lock();
-        dataContainer.push(Document("random number: " + std::to_string(counter), counter, type));
-        // /dataContainer.push(Document("random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: " + std::to_string(counter), counter, type));
+         dataContainer.push(Document(data, counter, type));
 
         internalMutex.unlock();
         std::this_thread::sleep_for(std::chrono::nanoseconds(random() % 4000000000 + 1000000000));
