@@ -6,6 +6,7 @@
 #include <memory>
 #include <variant>
 #include <thread>
+#include <chrono>
 
 std::string ipAdress = "127.0.0.1";
 int port = 8000;
@@ -13,10 +14,7 @@ int nServers =3;
 std::atomic<bool> isProgramRunning = true;
 
 
-int main(int argc, char *argv[]) {
-    if (argc == 2){
-        ipAdress = std::string(argv[1]);
-    }
+void gate(std::string ipAdress, int port, int nServers, std::atomic<bool> &isProgramRunning){
     std::cout <<"IP: " << ipAdress << std::endl;
     auto gate = Gate(ipAdress, port, nServers);
     auto timer = &Timer::getInstance();
@@ -49,4 +47,21 @@ int main(int argc, char *argv[]) {
         }
     }
     std::cout<< "Ending safely"; 
+}
+
+
+
+int main(int argc, char *argv[]) {
+    if (argc == 4){
+        ipAdress = std::string(argv[1]);
+        port = atoi(argv[2]);
+        nServers = atoi(argv[3]);
+    }
+    else{
+        throw std::runtime_error("Threee arguments are needed: <IP> <Port> <Number of serwers>");
+    }
+    std::thread gateThread(&gate, ipAdress, port, nServers, std::ref(isProgramRunning));
+    std::cin.get();
+    isProgramRunning = false;
+    gateThread.join();
 }

@@ -1,2 +1,3 @@
 pynput
 ConfigParser
+pycryptodomex
