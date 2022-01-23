@@ -7,13 +7,13 @@ Gate::Gate(std::string ip, int pt, int nsv):agregator(nsv){
     nServers = nsv;
     std::map<uint16_t, std::vector<std::vector<char>>> buff;
     std::cout<<"Waiting for connection from servers: 0/" << std::to_string(nServers) << std::endl;
-    for(int i =0; i<nServers; i++){
-        // serwerI.push_back(new SocketTCP(ipAdress, port+1+i,true));
-        // serwerGate.push_back(new Host(serwerI[i]));
-        std::cout<<"Waiting for connection from servers: "<<std::to_string(i+1) << "/" << std::to_string(nServers) << std::endl;
-    }
     sensorI = new SocketUDP(ipAdress, port,true);
     sensorGate = new Host(sensorI);
+    for(int i =0; i<nServers; i++){
+        serwerI.push_back(new SocketTCP(ipAdress, port+1+i,true));
+        serwerGate.push_back(new Host(serwerI[i]));
+        std::cout<<"Waiting for connection from servers: "<<std::to_string(i+1) << "/" << std::to_string(nServers) << std::endl;
+    }
     std::cout<<"All servers connected, listening to sensors...\n";
 }
 
@@ -88,23 +88,18 @@ int Gate::RememberType(uint8_t doc_type){
 
 void Gate::SynchronizeTime(){
     auto timer = &Timer::getInstance();
-    bool run = true;
-    while(run){
-        auto curr_time = timer->getCounter() % 10;
-        std::cout << "Synchronizing... " << curr_time << "\n";
-        for (int i = 0; i < knownTypes.size(); i++){
-            std::cout << "Synchronizing time for: " << unsigned(knownTypes[i]) << std::endl; 
-            std::vector<char> msg = Utils::serializeStruct<uint16_t>(curr_time);
-            DocumentHeader dh = {0, knownTypes[i], 1};
-            PHeader ph = {htons(curr_time), 1, 0};
-            auto sdh = Utils::serializeStruct<DocumentHeader>(dh);
-            msg = Utils::addHeader(sdh, msg);
-            auto sph = Utils::serializeStruct<PHeader>(ph);
-            msg = Utils::addHeader(sph, msg);
-            Utils::printVector(msg);
-            sensorGate->Send(msg);
-        }
-        run = false;
+    auto curr_time = timer->getCounter();
+    std::cout << "\nSynchronizing... " << curr_time << "\n";
+    for (int i = 0; i < knownTypes.size(); i++){
+        std::vector<char> msg = Utils::serializeStruct<uint16_t>(curr_time);
+        DocumentHeader dh = {0, knownTypes[i], 1};
+        PHeader ph = {htons(curr_time), 1, 0};
+        auto sdh = Utils::serializeStruct<DocumentHeader>(dh);
+        msg = Utils::addHeader(sdh, msg);
+        auto sph = Utils::serializeStruct<PHeader>(ph);
+        msg = Utils::addHeader(sph, msg);
+        sensorGate->Send(msg);
+        
     }
 }
 

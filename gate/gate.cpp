@@ -9,7 +9,7 @@
 
 std::string ipAdress = "127.0.0.1";
 int port = 8000;
-int nServers =2;
+int nServers =3;
 std::atomic<bool> isProgramRunning = true;
 
 
@@ -20,10 +20,13 @@ int main(int argc, char *argv[]) {
     std::cout <<"IP: " << ipAdress << std::endl;
     auto gate = Gate(ipAdress, port, nServers);
     auto timer = &Timer::getInstance();
+    int last_sync = 0;
     std::vector<char> raw;
+    
     
     while (isProgramRunning) {
         raw = gate.sensorGate->ReceiveRaw(true);
+        
         auto [ph_raw, msg] = Utils::divideHeader(sizeof(PHeader), raw);
         auto [sh_raw, data] = Utils::divideHeader(sizeof(DocumentHeader), msg);
 
@@ -38,9 +41,12 @@ int main(int argc, char *argv[]) {
             std::vector<char> msg = gate.ConstructDocumentMsg(sh.documentType,sh.documentId);
             auto [hed, _] = Utils::divideHeader(sizeof(AgregatedHeader), msg);
             Utils::printVector(hed);
-            // gate.serwerGate[sh.documentType]->Send(msg);
+            gate.serwerGate[sh.documentType]->Send(msg);
         }
-        gate.SynchronizeTime();
+        if(timer->getCounter() - last_sync >= 5){
+            gate.SynchronizeTime();
+            last_sync = timer->getCounter();
+        }
     }
     std::cout<< "Ending safely"; 
 }

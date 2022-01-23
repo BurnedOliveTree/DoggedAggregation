@@ -11,9 +11,7 @@ void SocketUDP::Send(std::vector<char> msg){
     std::vector<std::vector<char>> splited_msg = Utils::splitData(msg, MAX_PACKET_SIZE-sizeof(PHeader));
     for(uint8_t i = 0; i < splited_msg.size(); i++)
     {
-        Utils::printVector(splited_msg[i]);
-        PHeader ph = {htons(splited_msg[i].size()), static_cast<uint8_t>(splited_msg.size()), i};
-        sock.SendToKnown(Utils::addHeader(Utils::serializeStruct<PHeader>(ph), splited_msg[i]), s);
+        sock.SendToKnown(splited_msg[i], s);
     }
 }
 
@@ -50,6 +48,7 @@ void SocketUDP::RememberClient(std::pair<std::vector<char>,sockaddr> data){
     auto [ph_raw, msg] = Utils::divideHeader(sizeof(PHeader), data.first);
     auto [sh_raw, _] = Utils::divideHeader(sizeof(DocumentHeader), msg);
     auto sh = Utils::deserializeStruct<DocumentHeader>(sh_raw);
+    client_history.erase(sh.documentType);
     client_history.insert(std::make_pair(sh.documentType, data.second));
     
 }

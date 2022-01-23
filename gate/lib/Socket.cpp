@@ -106,6 +106,7 @@ std::vector<char> Socket::Read(size_t n_bytes){
 void Socket::Write(std::vector<char> msg){
     int sall = 0, sval = 0;
     int bsize = msg.size();
+    Utils::printVector(msg);
     do{
         if((sval = send(msgsock, msg.data()+sall, bsize-sall, 0)) < 0){
             throw std::runtime_error("Couldn't write message to stream");
@@ -118,6 +119,7 @@ void Socket::Write(std::vector<char> msg){
 void Socket::Send(std::vector<char> msg){
     int bsize = msg.size();
     int er;
+    self_addr = &dest_addr;
     er = sendto(sock, msg.data(), bsize, 0, self_addr, socket_len );
     if(er<0)
         {
