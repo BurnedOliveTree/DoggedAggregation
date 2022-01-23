@@ -12,8 +12,8 @@ void DocumentContainer::generateData() {
     while (isProgramRunning) {
         std::cout << "[sensor.cpp:36] Generated data" << std::endl;
         internalMutex.lock();
-        // dataContainer.push(Document("random number: " + std::to_string(counter), counter, type));
-        dataContainer.push(Document("random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: " + std::to_string(counter), counter, type));
+        dataContainer.push(Document("random number: " + std::to_string(counter), counter, type));
+        // /dataContainer.push(Document("random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: random number: " + std::to_string(counter), counter, type));
 
         internalMutex.unlock();
         std::this_thread::sleep_for(std::chrono::nanoseconds(random() % 4000000000 + 1000000000));
