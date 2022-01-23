@@ -16,6 +16,7 @@ class Gate{
     SocketInterface* sensorI;
     std::vector<SocketInterface*> serwerI;
     Agregator agregator;
+    std::vector<uint8_t> knownTypes;
 
 public:
     Host* sensorGate;
@@ -25,5 +26,5 @@ public:
     bool AgregateData(uint8_t which_server, uint16_t document_id, uint16_t part, uint16_t all_parts, std::vector<char> data, int timestamp);
     void EraseAgregatedData(uint8_t which_server, uint16_t document_id);
     std::vector<char> ConstructDocumentMsg(uint8_t which_server, uint16_t document_id);
-
+    void RememberType(uint8_t doc_type);
 };

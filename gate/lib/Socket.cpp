@@ -131,8 +131,9 @@ void Socket::SendToKnown(std::vector<char> msg, sockaddr where){
     int bsize = msg.size();
     int er;
     self_addr = &where;
+    std::cout<< "DESCRIPTOR SEND 2: " << inet_ntoa(((struct sockaddr_in *)self_addr)->sin_addr) << ":" << ((struct sockaddr_in *)self_addr)->sin_port << " | " << socket_len << std::endl;
+
     er = sendto(sock, msg.data(), bsize, 0, self_addr, socket_len );
-    std::cout<< "DESCRIPTOR SEND: " << inet_ntoa(((struct sockaddr_in *)self_addr)->sin_addr) << ":" << ((struct sockaddr_in *)self_addr)->sin_port << " | " << socket_len << std::endl;
     if(er<0)
         {
             throw std::runtime_error("Coulwdn't send message to server " + std::to_string(er));
@@ -141,8 +142,9 @@ void Socket::SendToKnown(std::vector<char> msg, sockaddr where){
 
 std::vector<char> Socket::Receive(){
     std::vector<char> buffer(MAX_PACKET_SIZE);
-    std::cout<< "DESCRIPTOR RECEIVE: " << inet_ntoa(((struct sockaddr_in *)self_addr)->sin_addr) << ":" << ((struct sockaddr_in *)self_addr)->sin_port << " | " << socket_len  << std::endl;
     int result = recvfrom(sock, buffer.data(), buffer.size(), 0, self_addr, &socket_len);
+    std::cout<< "DESCRIPTOR RECEIVE: " << inet_ntoa(((struct sockaddr_in *)self_addr)->sin_addr) << ":" << ((struct sockaddr_in *)self_addr)->sin_port << " | " << socket_len  << std::endl;
+
     if( result < 0 )
         {   
             throw std::runtime_error("Couldn't receive message from server");
@@ -154,8 +156,9 @@ std::vector<char> Socket::Receive(){
 
 std::pair<std::vector<char>,sockaddr> Socket::ReceiveWithSender(){
     std::vector<char> buffer(MAX_PACKET_SIZE);
-    std::cout<< "DESCRIPTOR RECEIVE: " << inet_ntoa(((struct sockaddr_in *)self_addr)->sin_addr) << ":" << ((struct sockaddr_in *)self_addr)->sin_port << " | " << socket_len  << std::endl;
     int result = recvfrom(sock, buffer.data(), buffer.size(), 0, self_addr, &socket_len);
+    std::cout<< "DESCRIPTOR RECEIVE 2: " << inet_ntoa(((struct sockaddr_in *)self_addr)->sin_addr) << ":" << ((struct sockaddr_in *)self_addr)->sin_port << " | " << socket_len  << std::endl;
+
     if( result < 0 )
         {   
             throw std::runtime_error("Couldn't receive message from server");

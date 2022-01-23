@@ -28,6 +28,7 @@ Gate::~Gate(){
 
 bool Gate::AgregateData(uint8_t which_server, uint16_t document_id, uint16_t part, uint16_t all_parts, std::vector<char> data, int timestamp)
 {
+    RememberType(which_server);
     if(agregator.docBuilder[which_server].count(document_id)){
         //dokument już tu jest
         if(agregator.packetCounter[which_server][document_id]>part){
@@ -74,4 +75,8 @@ void Gate::EraseAgregatedData(uint8_t which_server, uint16_t document_id){
     agregator.error[which_server].erase(document_id);
 }
 
+void Gate::RememberType(uint8_t doc_type){
+    if ( std::find(knownTypes.begin(), knownTypes.end(), doc_type) != knownTypes.end() )
+        knownTypes.push_back(doc_type);
+}
 

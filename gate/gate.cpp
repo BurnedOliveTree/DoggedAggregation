@@ -10,13 +10,22 @@
 std::string ipAdress = "127.0.0.1";
 int port = 8000;
 int nServers =2;
+std::atomic<bool> isProgramRunning = true;
+
+
+
+void SynchronizeTime(){
+    auto timer = &Timer::getInstance();
+    while(isProgramRunning){
+        std::cout << "yay\n";
+    }
+}
 
 int main(int argc, char *argv[]) {
     if (argc == 2){
         ipAdress = std::string(argv[1]);
     }
     std::cout <<"IP: " << ipAdress << std::endl;
-    std::atomic<bool> isProgramRunning = true;
     auto gate = Gate(ipAdress, port, nServers);
     auto timer = &Timer::getInstance();
     std::vector<char> raw;
