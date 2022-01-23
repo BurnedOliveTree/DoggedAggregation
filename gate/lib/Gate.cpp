@@ -63,7 +63,6 @@ bool Gate::AgregateData(uint8_t which_server, uint16_t document_id, uint16_t par
 std::vector<char> Gate::ConstructDocumentMsg(uint8_t which_server, uint16_t document_id){
     std::vector<char> msg = agregator.docBuilder[which_server][document_id];
     uint32_t hash = Gate::GetHash(Utils::deserializeString(msg));
-    std::cout << "hash: " << hash << std::endl << htonl(hash) << std::endl;
     AgregatedHeader ah = {htons(document_id), which_server, agregator.error[which_server][document_id], htonl(hash)};
     msg = Utils::addHeader<AgregatedHeader>(ah,msg);
     EraseAgregatedData(which_server, document_id);

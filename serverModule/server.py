@@ -1,10 +1,8 @@
-import binascii
 import configparser
 import hashlib
 import logging
 import os
 from argparse import ArgumentParser
-import socket
 from FileType import FileType
 from socketLib import SocketInterface, Socket, Host
 from pynput.keyboard import Key, Listener
@@ -66,7 +64,6 @@ class Server(Host):
         hash_alg.update(data)
         temp = hash_alg.digest()
         temp = cipher.encrypt(temp)[:4]
-        print(f"hash: {int.from_bytes(temp, 'little')}\nencrypted: {hashed_data}\n")
         return int.from_bytes(temp, 'little') == hashed_data
 
     def __on_release(self, key):
