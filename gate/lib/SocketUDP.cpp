@@ -31,12 +31,10 @@ std::vector<char> SocketUDP::Receive(bool echo){
 
 std::vector<char> SocketUDP::ReceiveRaw(bool echo){
     std::vector<char> rec;
-    PHeader ph;
     rec = sock.Receive();
     if(echo){
         auto [hd, msg] = Utils::divideHeader(sizeof(PHeader), rec);
-        ph = Utils::deserializeStruct<PHeader>(hd);
-        sock.Send(Utils::serializeStruct(ph));
+        sock.Send(rec);
     }
     return rec;
 }
