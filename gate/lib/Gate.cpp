@@ -7,13 +7,13 @@ Gate::Gate(std::string ip, int pt, int nsv):agregator(nsv){
     nServers = nsv;
     std::map<uint16_t, std::vector<std::vector<char>>> buff;
     std::cout<<"Waiting for connection from servers: 0/" << std::to_string(nServers) << std::endl;
+    sensorI = new SocketUDP(ipAdress, port,true);
+    sensorGate = new Host(sensorI);
     for(int i =0; i<nServers; i++){
         serwerI.push_back(new SocketTCP(ipAdress, port+1+i,true));
         serwerGate.push_back(new Host(serwerI[i]));
         std::cout<<"Waiting for connection from servers: "<<std::to_string(i+1) << "/" << std::to_string(nServers) << std::endl;
     }
-    sensorI = new SocketUDP(ipAdress, port,true);
-    sensorGate = new Host(sensorI);
     std::cout<<"All servers connected, listening to sensors...\n";
 }
 
@@ -28,6 +28,7 @@ Gate::~Gate(){
 
 bool Gate::AgregateData(uint8_t which_server, uint16_t document_id, uint16_t part, uint16_t all_parts, std::vector<char> data, int timestamp)
 {
+    RememberType(which_server);
     if(agregator.docBuilder[which_server].count(document_id)){
         //dokument już tu jest
         if(agregator.packetCounter[which_server][document_id]>part){
@@ -92,4 +93,31 @@ void Gate::EraseAgregatedData(uint8_t which_server, uint16_t document_id){
     agregator.error[which_server].erase(document_id);
 }
 
+int Gate::RememberType(uint8_t doc_type){
+    for (int i = 0; i < knownTypes.size(); i++){
+        if(knownTypes[i] == doc_type){
+            return 0;
+        }
+    }
+    knownTypes.push_back(doc_type);
+    return 1;
+}
+
+
+void Gate::SynchronizeTime(){
+    auto timer = &Timer::getInstance();
+    auto curr_time = timer->getCounter();
+    std::cout << "\nSynchronizing... " << curr_time << "\n";
+    for (int i = 0; i < knownTypes.size(); i++){
+        std::vector<char> msg = Utils::serializeStruct<uint16_t>(curr_time);
+        DocumentHeader dh = {0, knownTypes[i], 1};
+        PHeader ph = {htons(curr_time), 1, 0};
+        auto sdh = Utils::serializeStruct<DocumentHeader>(dh);
+        msg = Utils::addHeader(sdh, msg);
+        auto sph = Utils::serializeStruct<PHeader>(ph);
+        msg = Utils::addHeader(sph, msg);
+        sensorGate->Send(msg);
+        
+    }
+}
 

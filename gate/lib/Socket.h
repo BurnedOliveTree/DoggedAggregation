@@ -10,6 +10,7 @@
 #include <string.h>
 #include <iostream>
 #include <vector>
+#include <utility>
 #include <arpa/inet.h>
 
 
@@ -21,6 +22,7 @@ public:
     struct sockaddr_in desc_4;
     struct sockaddr_in6 desc_6;
     struct sockaddr* self_addr;
+    struct sockaddr* buff_addr;
     struct sockaddr dest_addr;
     struct pollfd fds[200];
     bool is_server;
@@ -39,8 +41,11 @@ public:
     void Connect();
     void Listen();
     void Write(std::vector<char> msg);
-    void Send(std::vector<char> msg);
-    std::vector<char> Receive();
     std::vector<char> Read(size_t n_bytes);
 
+
+    void Send(std::vector<char> msg);
+    void SendToKnown(std::vector<char> msg, sockaddr where);
+    std::vector<char> Receive();
+    std::pair<std::vector<char>,sockaddr> ReceiveWithSender();
 };
