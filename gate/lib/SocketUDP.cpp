@@ -37,7 +37,7 @@ std::vector<char> SocketUDP::ReceiveRaw(bool echo){
         auto [hd, msg] = Utils::divideHeader(sizeof(ph), rec);
         ph = Utils::deserializeStruct<PacketHeaderUDP>(hd);
         result.insert(result.end(), msg.begin(), msg.end());
-        sock.Send(result);
+        sock.Send(Utils::serializeStruct(ph));
     }
     return rec;
 }
