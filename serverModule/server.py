@@ -39,7 +39,7 @@ class Server(Host):
     def connect(self) -> None:
         socket = Socket(self.host, self.port)
         with SocketInterface(socket) as socket:
-            logging.info(f"Will receive data from {self.host} : {self.port}")
+            logging.info(f"Will receive data from {self.host} : {self.port}, type: {self.file_type.value}")
             while self.server_running:
                 file_id, file_type_descriptor, status_code, hash_hash, content = socket.read()
                 if status_code != 0:

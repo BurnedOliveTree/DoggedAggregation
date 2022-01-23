@@ -30,20 +30,29 @@ bool Gate::AgregateData(uint8_t which_server, uint16_t document_id, uint16_t par
 {
     if(agregator.docBuilder[which_server].count(document_id)){
         //dokument już tu jest
+        if(agregator.packetCounter[which_server][document_id]>part){
+            // i odebraliśmy już ten pakiet
+            return false;
+        }
         if(agregator.packetCounter[which_server][document_id]!=part){
+            // jeśli ne oczekiwaliśmy tego partu, ustawiamy uszkodzony dokument i odsyłamy
             agregator.error[which_server][document_id]=1;
+            return true;
         }
         else{
+            // Agregujemy part do całości dokumentu
             agregator.docBuilder[which_server][document_id].insert( agregator.docBuilder[which_server][document_id].end(), data.begin(), data.end());
             agregator.packetCounter[which_server][document_id]++;
         }
     }
-    else{
-            agregator.docBuilder[which_server][document_id] = data;
-            agregator.packetCounter[which_server][document_id] = 1;
-            agregator.timestamps[which_server][document_id] = timestamp;
-            agregator.error[which_server][document_id]=0;
-        }
+    else if(part == 0)
+    {
+        // Jeśli to pierwszy part, dodaj nowy dokument do agregacji
+        agregator.docBuilder[which_server][document_id] = data;
+        agregator.packetCounter[which_server][document_id] = 1;
+        agregator.timestamps[which_server][document_id] = timestamp;
+        agregator.error[which_server][document_id]=0;
+    }
     if(agregator.packetCounter[which_server][document_id] == all_parts){
         return true;
     } 
