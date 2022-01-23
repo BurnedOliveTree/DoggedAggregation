@@ -23,10 +23,10 @@ int main(int argc, char *argv[]) {
     int last_sync = 0;
     std::vector<char> raw;
     
-    
+
     while (isProgramRunning) {
         raw = gate.sensorGate->ReceiveRaw(true);
-        
+
         auto [ph_raw, msg] = Utils::divideHeader(sizeof(PHeader), raw);
         auto [sh_raw, data] = Utils::divideHeader(sizeof(DocumentHeader), msg);
 

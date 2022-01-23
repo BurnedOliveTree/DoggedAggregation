@@ -1,12 +1,14 @@
 import configparser
+import hashlib
 import logging
 import os
 from argparse import ArgumentParser
-
 from FileType import FileType
 from socketLib import SocketInterface, Socket, Host
 from pynput.keyboard import Key, Listener
 import signal
+from Cryptodome.Cipher import AES
+
 
 
 class Server(Host):
@@ -23,7 +25,7 @@ class Server(Host):
         else:
             file_type_descriptor = int(parser.get("server", "file_type_descriptor"))
         self.file_type = FileType(file_type_descriptor)
-        if file_type_descriptor != ((self.port % 1000) + 1):
+        if file_type_descriptor != ((self.port % 1000) - 1):
             logging.error("File of wrong format will be received Please check your configuration")
 
     @staticmethod
@@ -45,7 +47,9 @@ class Server(Host):
                 if status_code != 0:
                     logging.info("Received invalid data")
                 elif file_type_descriptor != self.file_type.value:
-                    logging.info("File of wrong format received. Please check your configuration")
+                    logging.info(f"File of wrong format {file_type_descriptor}  received, expected {self.file_type.value}. Please check your configuration")
+                elif not self.check_hash(hash_hash, content):
+                    logging.warning("Unknown gate")
                 else:
                     file_path = f"{self.data_path}{file_id}_{self.file_type.name}.txt"
                     logging.info(f'Received data: {file_path}')
@@ -53,6 +57,14 @@ class Server(Host):
                         file.write(content)
                         file.flush()
                         os.fsync(file.fileno())
+
+    def check_hash(self, hashed_data, data):
+        hash_alg = hashlib.sha256()
+        cipher = AES.new(b'\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f', AES.MODE_ECB)
+        hash_alg.update(data)
+        temp = hash_alg.digest()
+        temp = cipher.encrypt(temp)[:4]
+        return int.from_bytes(temp, 'little') == hashed_data
 
     def __on_release(self, key):
         if key == Key.esc:
