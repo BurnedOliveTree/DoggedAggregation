@@ -2,13 +2,8 @@
 #include "Socket.h"
 #include "Utils.h"
 #include "Header.h"
-
-struct PacketHeaderTCP{
-    uint16_t length;
-    uint8_t max_packet;
-    uint8_t curr_packet;
-};
-
+#include <map>
+#include <utility>
 
 class SocketInterface{
 public:

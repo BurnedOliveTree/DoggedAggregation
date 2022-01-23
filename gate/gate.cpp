@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
             std::vector<char> msg = gate.ConstructDocumentMsg(sh.documentType,sh.documentId);
             auto [hed, _] = Utils::divideHeader(sizeof(AgregatedHeader), msg);
             Utils::printVector(hed);
-            gate.serwerGate[sh.documentType]->Send(msg);
+            // gate.serwerGate[sh.documentType]->Send(msg);
         }
     }
     std::cout<< "Ending safely"; 

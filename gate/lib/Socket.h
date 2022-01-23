@@ -10,6 +10,7 @@
 #include <string.h>
 #include <iostream>
 #include <vector>
+#include <utility>
 #include <arpa/inet.h>
 
 
@@ -39,8 +40,11 @@ public:
     void Connect();
     void Listen();
     void Write(std::vector<char> msg);
-    void Send(std::vector<char> msg);
-    std::vector<char> Receive();
     std::vector<char> Read(size_t n_bytes);
 
+
+    void Send(std::vector<char> msg);
+    void SendToKnown(std::vector<char> msg, sockaddr where);
+    std::vector<char> Receive();
+    std::pair<std::vector<char>,sockaddr> ReceiveWithSender();
 };

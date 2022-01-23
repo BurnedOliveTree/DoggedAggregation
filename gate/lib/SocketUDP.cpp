@@ -17,8 +17,11 @@ void SocketUDP::Send(std::vector<char> msg){
 }
 
 std::vector<char> SocketUDP::Receive(bool echo){
+    std::pair<std::vector<char>, sockaddr> buff;
     std::vector<char> result, rec;
     PHeader ph;
+    buff = sock.ReceiveWithSender();
+
     rec = sock.Receive();
     auto [hd, msg] = Utils::divideHeader(sizeof(PHeader), rec);
     ph = Utils::deserializeStruct<PHeader>(hd);
