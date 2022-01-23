@@ -1,4 +1,5 @@
 #include "Socket.h"
+#include "Utils.h"
 #include <iostream>
 
 Socket::Socket(std::string ip, int port, bool is_serv,bool is_UDP){
@@ -103,16 +104,17 @@ std::vector<char> Socket::Read(size_t n_bytes){
 }
 
 void Socket::Write(std::vector<char> msg){
-    struct sockaddr* dst;
-    socklen_t dst_len;
     int sall = 0, sval = 0;
     int bsize = msg.size();
+    std::cout <<"is Nice?\n";
     do{
-        if((sval = send(sock, msg.data()+sall, bsize-sall, 0)) < 0){
+        if((sval = send(msgsock, msg.data()+sall, bsize-sall, 0)) < 0){
             throw std::runtime_error("Couldn't write message to stream");
         }
         sall += sval;
+
     } while(bsize-sall>0);
+    std::cout <<"Nice!\n";
 }
 
 void Socket::Send(std::vector<char> msg){
@@ -127,7 +129,6 @@ void Socket::Send(std::vector<char> msg){
         dst_len = socket_len;
     }
     int bsize = msg.size();
-    std::cout << "sendto dst: " << "hmm" << "len: " << int(dest_len)<< "\n";
     int er;
     er = sendto(sock, msg.data(), bsize, 0, self_addr, socket_len );
     if(er<0)
@@ -148,9 +149,7 @@ std::vector<char> Socket::Receive(){
         dst = self_addr;
         dst_len = &socket_len;
     }
-
     int result = recvfrom(sock, buffer.data(), buffer.size(), 0, self_addr, &socket_len);
-    std::cout << "recfrom dst: " << "hmm" << "len: " << dest_len<< "\n";
     if( result < 0 )
         {   
             throw std::runtime_error("Couldn't receive message from server");

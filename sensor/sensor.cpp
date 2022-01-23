@@ -5,7 +5,7 @@
 #include <iostream>
 #include <thread>
 
-std::string ipAdress = "192.168.112.55";
+std::string ipAdress = "127.0.0.1";
 int port = 8000;
 
 void timeSynchronization(Host* client, std::atomic<bool> isProgramRunning) {
@@ -25,6 +25,10 @@ int main(int argc, char *argv[]) {
     if (argc < 2) {
         throw std::invalid_argument("Please specify type of data! (0-3)");
     }
+    if (argc == 3){
+        ipAdress = std::string(argv[2]);
+    }
+    std::cout <<"IP: " << ipAdress << std::endl;
     std::atomic<bool> isProgramRunning = true;
     auto timer = &Timer::getInstance();
     auto messages = DocumentContainer(isProgramRunning, static_cast<DocumentType>(atoi(argv[1])));
