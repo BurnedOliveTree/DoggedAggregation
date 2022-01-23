@@ -75,8 +75,36 @@ void Gate::EraseAgregatedData(uint8_t which_server, uint16_t document_id){
     agregator.error[which_server].erase(document_id);
 }
 
-void Gate::RememberType(uint8_t doc_type){
-    if ( std::find(knownTypes.begin(), knownTypes.end(), doc_type) != knownTypes.end() )
-        knownTypes.push_back(doc_type);
+int Gate::RememberType(uint8_t doc_type){
+    for (int i = 0; i < knownTypes.size(); i++){
+        if(knownTypes[i] == doc_type){
+            return 0;
+        }
+    }
+    knownTypes.push_back(doc_type);
+    return 1;
+}
+
+
+void Gate::SynchronizeTime(){
+    auto timer = &Timer::getInstance();
+    bool run = true;
+    while(run){
+        auto curr_time = timer->getCounter() % 10;
+        std::cout << "Synchronizing... " << curr_time << "\n";
+        for (int i = 0; i < knownTypes.size(); i++){
+            std::cout << "Synchronizing time for: " << unsigned(knownTypes[i]) << std::endl; 
+            std::vector<char> msg = Utils::serializeStruct<uint16_t>(curr_time);
+            DocumentHeader dh = {0, knownTypes[i], 1};
+            PHeader ph = {htons(curr_time), 1, 0};
+            auto sdh = Utils::serializeStruct<DocumentHeader>(dh);
+            msg = Utils::addHeader(sdh, msg);
+            auto sph = Utils::serializeStruct<PHeader>(ph);
+            msg = Utils::addHeader(sph, msg);
+            Utils::printVector(msg);
+            sensorGate->Send(msg);
+        }
+        run = false;
+    }
 }
 

@@ -22,6 +22,7 @@ public:
     struct sockaddr_in desc_4;
     struct sockaddr_in6 desc_6;
     struct sockaddr* self_addr;
+    struct sockaddr* buff_addr;
     struct sockaddr dest_addr;
     struct pollfd fds[200];
     bool is_server;

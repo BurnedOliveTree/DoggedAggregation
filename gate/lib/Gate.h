@@ -5,6 +5,7 @@
 #include "Host.h"
 #include "Header.h"
 #include "Agregator.h"
+#include "Timer.h"
 #include <iostream>
 #include <vector>
 #include <iomanip>
@@ -26,5 +27,6 @@ public:
     bool AgregateData(uint8_t which_server, uint16_t document_id, uint16_t part, uint16_t all_parts, std::vector<char> data, int timestamp);
     void EraseAgregatedData(uint8_t which_server, uint16_t document_id);
     std::vector<char> ConstructDocumentMsg(uint8_t which_server, uint16_t document_id);
-    void RememberType(uint8_t doc_type);
+    int RememberType(uint8_t doc_type);
+    void SynchronizeTime();
 };

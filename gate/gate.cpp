@@ -13,14 +13,6 @@ int nServers =2;
 std::atomic<bool> isProgramRunning = true;
 
 
-
-void SynchronizeTime(){
-    auto timer = &Timer::getInstance();
-    while(isProgramRunning){
-        std::cout << "yay\n";
-    }
-}
-
 int main(int argc, char *argv[]) {
     if (argc == 2){
         ipAdress = std::string(argv[1]);
@@ -38,7 +30,6 @@ int main(int argc, char *argv[]) {
         auto sh = Utils::deserializeStruct<DocumentHeader>(sh_raw);
         auto ph = Utils::deserializeStruct<PHeader>(ph_raw);
         std::cout << "\nNew data arrived:\n";
-        // Utils::printVector(raw);
         std::cout << "Document Header: \t" << unsigned(sh.documentId) << "\t" << unsigned(sh.documentType) << "\t" << unsigned(sh.type) << "\n";
         std::cout << "PHeader: \t\t" << ntohs(ph.current) << "\t" << ntohs(ph.total) << "\t" << ntohs(ph.timestamp) << "\n";
 
@@ -49,6 +40,7 @@ int main(int argc, char *argv[]) {
             Utils::printVector(hed);
             // gate.serwerGate[sh.documentType]->Send(msg);
         }
+        gate.SynchronizeTime();
     }
     std::cout<< "Ending safely"; 
 }
